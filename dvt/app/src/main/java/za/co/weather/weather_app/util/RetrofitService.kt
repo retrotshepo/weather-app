@@ -10,7 +10,6 @@ class RetrofitService {
 
     companion object {
 
-        // "http://api.openweathermap.org/data/2.5/weather?%s&appid=74b118a2e76bfa7bee7ed2941525f768&units=metric"
         private const val BASE_URL_ROAD_WARRIOR = "http://api.openweathermap.org/"
 
 

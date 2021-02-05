@@ -4,7 +4,7 @@ class WeatherAPIEndpoint {
 
     companion object {
 
-        suspend fun getWeatherCALL() =
-            RetrofitService.getClient()?.getWeatherDataAPI()
+        suspend fun getWeatherCALL(latitude: Double, longitude: Double) =
+            RetrofitService.getClient()?.getWeatherDataAPI(latitude, longitude)
     }
 }
