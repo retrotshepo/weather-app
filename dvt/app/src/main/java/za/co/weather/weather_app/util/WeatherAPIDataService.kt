@@ -1,12 +1,7 @@
 package za.co.weather.weather_app.util
 
-import org.json.JSONObject
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Query
-import za.co.weather.weather_app.util.CallValues.Companion.UNITS
-import za.co.weather.weather_app.util.RetrofitService.Companion.BASE_URL_ROAD_WARRIOR
 
 interface WeatherAPIDataService {
 
