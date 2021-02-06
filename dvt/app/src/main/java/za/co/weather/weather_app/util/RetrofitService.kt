@@ -31,10 +31,4 @@ class RetrofitService {
         }
 
     }
-
-
-
-
-
-
 }
