@@ -86,46 +86,34 @@ class WeatherScreen : Fragment() {
                 val res = serializeToJSONObject(resForecast as LinkedTreeMap<Any, Any>)
 
                 if (res != null) {
-
-//                     current = CurrentTemperatureData(
-//                        res.getJSONObject("coord"), res.getJSONArray("weather"),
-//                        res.getString("base"), res.getJSONObject("main"),
-//                        res.getDouble("visibility"), res.getJSONObject("wind"),
-//                        res.getJSONObject("clouds"), "${res.getDouble("dt")}",
-//                        res.getJSONObject("sys"), res.getLong("timezone"),
-//                        "${res.getLong("id")}", res.getString("name"),
-//                        "${res.getInt("cod")}")
-
-
                     val list = res.getJSONArray("list")
-
                     for(i in 0 until list.length()) {
+
                         val item = list.getJSONObject(i)
 
-                        val entry = DailyTemperatureData(
-                            "${item.getDouble("dt")}",
-                        item.getJSONObject("main"),
-                        item.getJSONArray("weather"),
-                        item.getJSONObject("clouds"),
-                        item.getJSONObject("wind"), item.getDouble("visibility"),
-                        item.getDouble("pop"),
-                        if (item.has("rain")) item.getJSONObject("rain") else JSONObject(), item.getJSONObject("sys"),
-                        item.getString("dt_txt"))
-                        forecast.add(entry)
+                        if(item.getString("dt_txt").contains("12:00")) {
+
+                            val entry = DailyTemperatureData(
+                                "${item.getDouble("dt")}",
+                                item.getJSONObject("main"),
+                                item.getJSONArray("weather"),
+                                item.getJSONObject("clouds"),
+                                item.getJSONObject("wind"),
+                                item.getDouble("visibility"),
+                                item.getDouble("pop"),
+                                if (item.has("rain")) item.getJSONObject("rain") else JSONObject(),
+                                item.getJSONObject("sys"),
+                                item.getString("dt_txt")
+                            )
+                            forecast.add(entry)
+
+                        }
                     }
 
                 }
 
                 println(res)
-
             }
-
-
-
-
-
-
-
         }
         Handler().postDelayed({
             updateScreen(current)
@@ -146,42 +134,22 @@ class WeatherScreen : Fragment() {
         temp_curr_text.text = "${currentTemperatureData.main.getDouble("feels_like")}\nFeels like"
         temp_max_text.text = "${currentTemperatureData.main.getDouble("temp_max")}\nmax"
 
-
         /**
          * setting up adapter.
          */
-
-
         val forecastAdapter = ForecastAdapter(requireContext(), forecast)
-
-
         recycler_view_daily_forecast.adapter = forecastAdapter
-
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-
         recycler_view_daily_forecast.layoutManager = layoutManager
-
-
-
-
-
-
 
     }
 
-    fun serializeToJSONObject(linkedTreeMap: LinkedTreeMap<Any, Any>?) : JSONObject? {
+    private fun serializeToJSONObject(linkedTreeMap: LinkedTreeMap<Any, Any>?) : JSONObject? {
         val gson = Gson()
         val json : JsonObject = gson.toJsonTree(linkedTreeMap).asJsonObject
 
         println(json.javaClass)
         println(json)
-
-
-
-
-
-
-
 
         return JSONObject(json.toString())
     }
