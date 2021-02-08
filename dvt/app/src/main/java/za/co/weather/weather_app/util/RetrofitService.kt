@@ -10,7 +10,7 @@ class RetrofitService {
 
     companion object {
 
-        private const val BASE_URL_ROAD_WARRIOR = "http://api.openweathermap.org/"
+        private const val BASE_URL_ROAD_WARRIOR = "https://api.openweathermap.org/"
 
 
         private val okHttpClient = OkHttpClient.Builder()
