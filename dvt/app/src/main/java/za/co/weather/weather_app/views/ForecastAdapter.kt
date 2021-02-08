@@ -9,6 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
 import java.lang.ref.WeakReference
+import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.math.roundToInt
 
 class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
 
@@ -38,10 +44,39 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.dailyTempMax.get()?.text = (item.main.getDouble("temp_max")).toString()
-        holder.dailyTempDay.get()?.text = item.date
+        holder.dailyTempMax.get()?.text = "${item.main.getDouble("temp_max").roundToInt()}"
+//        holder.dailyTempDay.get()?.text = item.date
+        holder.dailyTempDay.get()?.text = "${convertDateToDay(item.date)}".toLowerCase(Locale.ENGLISH).capitalize()
+
+        if(item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
+            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+        }
+        else if(item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
+            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.clear))
+
+        }
+        else if(item.weather.getJSONObject(0).getString("main").contains("rain", true)) {
+            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.rain))
+        }
+
+
 
 //        holder.bind(item)
+    }
+
+    fun convertDateToDay(date: String): DayOfWeek? {
+
+        val calendar = Calendar.getInstance()
+
+//        var simpleFormat =  DateTimeFormatter.ISO_DATE;
+//        val todayFormat = SimpleDateFormat("HH:mm \tEEEE, dd/MMMM/yyyy ")
+
+        val todayFormat = SimpleDateFormat("dd/MMMM/yyyy HH:mm:ss")
+
+        var convertedDate = LocalDate.parse(date.substring(0, 10), DateTimeFormatter.ISO_DATE)
+
+        return convertedDate.dayOfWeek
+
     }
 
     class ViewHolder : RecyclerView.ViewHolder {
