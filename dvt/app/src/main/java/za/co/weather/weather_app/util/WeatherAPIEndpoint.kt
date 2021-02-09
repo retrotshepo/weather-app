@@ -9,5 +9,11 @@ class WeatherAPIEndpoint {
 
         suspend fun getWeatherForecastCALL(latitude: Double, longitude: Double) =
             RetrofitService.getClient()?.getWeatherForecastDataAPI(latitude, longitude)
+
+        suspend fun getWeatherCityCALL(city: String = "Soweto") =
+            RetrofitService.getClient()?.getWeatherCityAPI(city)
+
+        suspend fun getWeatherCityForecastCALL(city: String = "Soweto") =
+            RetrofitService.getClient()?.getWeatherCityForecastAPI(city)
     }
 }
