@@ -1,14 +1,12 @@
 package za.co.weather.weather_app.views
 
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,14 +15,14 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.internal.LinkedTreeMap
 import kotlinx.android.synthetic.main.layout_weather_screen.*
-import kotlinx.android.synthetic.main.navigation_view_header.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.util.CustomLocationListener
+import za.co.weather.weather_app.util.NetworkState.Companion.isMobileDataConnected
+import za.co.weather.weather_app.util.NetworkState.Companion.isWiFiConnected
 import za.co.weather.weather_app.util.WeatherAPIEndpoint
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -32,10 +30,15 @@ class WeatherScreen : Fragment() {
 
     private var current: CurrentTemperatureData? = null
     var forecast = arrayListOf<DailyTemperatureData>()
-
+    var gps: CustomLocationListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
+
+        gps = CustomLocationListener()
+
+        gps?.getLastKnownLocationGPS(requireContext())
+        gps?.getLastKnownLocationNetwork(requireContext())
 
         return inflater.inflate(R.layout.layout_weather_screen, container, false)
     }
@@ -47,27 +50,39 @@ class WeatherScreen : Fragment() {
 
 
 
+            callWeatherEndpoints(gps?.getLatitude() , gps?.getLongitude())
 
         temp_day_container.setOnClickListener {
             println("tuts een twe")
-//            apitest()
 
-            val gps = CustomLocationListener(requireContext())
-            gps.getCurrentLoc()
 
-            println("lat: ${gps.currentLocation?.latitude} \tlon: lon: ${gps.currentLocation?.longitude}")
+
+//            println("latme: ${gps.getLocation()?.latitude} \tlonme: ${gps.getLocation()?.longitude}")
+
+
+
+//            println("lat: ${gps.currentLocation?.latitude} \tlon: lon: ${gps.currentLocation?.longitude}")
+
+
+
+
+
 
         }
     }
 
 
+    fun callWeatherEndpoints(lat: Double?, lon: Double?) {
+        println("api test\tlat: $lat ; lon: $lon")
 
+        if (lat == null || lon == null) {
+            return
+        }
 
-
-
-
-    fun apitest() {
-        println("hello world!")
+        if(!isMobileDataConnected(requireContext()) && !isWiFiConnected(requireContext())) {
+            Toast.makeText(requireContext(), "No stable internet connection to update", Toast.LENGTH_LONG).show()
+            return
+        }
 
         this@WeatherScreen.lifecycleScope.launch (Dispatchers.IO) {
 
@@ -75,8 +90,8 @@ class WeatherScreen : Fragment() {
 //            -26.1846304,28.0014622 ACK
 //            -33.9152208,18.3758763 CPT
 //            -30.7158878,30.3887406 NPS
-            val resCurrent = WeatherAPIEndpoint.getWeatherCurrentCALL(-26.5603, 27.8625)
-            val resForecast = WeatherAPIEndpoint.getWeatherForecastCALL(-26.5603, 27.8625)
+            val resCurrent = WeatherAPIEndpoint.getWeatherCurrentCALL(lat, lon)
+            val resForecast = WeatherAPIEndpoint.getWeatherForecastCALL(lat, lon)
 
             if (resCurrent != null) {
 
@@ -95,9 +110,6 @@ class WeatherScreen : Fragment() {
 
                 }
 
-
-//                println(" sunrise ${convertLongToTime(current?.sys?.getLong("sunrise"))}")
-//                println(" sunset ${convertLongToTime(current?.sys?.getLong("sunset"))}")
                 println(res)
 
             }
@@ -138,12 +150,12 @@ forecast = arrayListOf()
         }
         Handler().postDelayed({
             updateScreen(current)
-        }, 3000)
+        }, 3500)
     }
 
     private fun updateScreen(currentTemperatureData: CurrentTemperatureData?) {
 
-        if(currentTemperatureData == null) {
+        if(currentTemperatureData == null || temp_number_main == null) {
             return
         }
 
@@ -161,7 +173,6 @@ forecast = arrayListOf()
 
         curr_feel.text = "FEELS LIKE\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
         curr_visibility.text = "VISIBILITY\n${(currentTemperatureData.visibility/1000)}km"
-//        location_text.text = "hello world"
 
         if(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
 
@@ -181,6 +192,7 @@ forecast = arrayListOf()
          * setting up adapter.
          */
         val forecastAdapter = ForecastAdapter(requireContext(), forecast)
+        recycler_view_daily_forecast.visibility = ViewGroup.VISIBLE
         recycler_view_daily_forecast.adapter = forecastAdapter
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view_daily_forecast.layoutManager = layoutManager
@@ -197,14 +209,9 @@ forecast = arrayListOf()
         return JSONObject(json.toString())
     }
 
-    fun convertLongToTime(time: Long?): String {
-        if (time != null) {
-            if (time > 0) {
-                val date = Date(time)
-                val format = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-                return format.format(date)
-            }
-        }
-        return ""
+
+    override fun onStop() {
+        super.onStop()
+        gps?.stopGPS()
     }
 }
