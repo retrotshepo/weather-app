@@ -1,33 +1,20 @@
 package za.co.weather.weather_app.views
 
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
+import io.realm.annotations.RealmClass
 import org.json.JSONArray
 import org.json.JSONObject
 
-open class FavouriteData : RealmObject() {
+@RealmClass
+open class FavouriteObject : RealmObject() {
 
+    @PrimaryKey
     var id = 0L
     var name: String = ""
     var coordinates: String = ""
     var weather: String = ""
     var main: String = ""
+    var sys: String = ""
 
 }
-
-//var coordinates: JSONObject
-//var weather: JSONArray
-//
-//var base: String
-//var main: JSONObject
-//
-//var visibility: Double
-//var wind: JSONObject
-//var clouds: JSONObject
-//
-//var dt: String
-//var sys: JSONObject
-//
-//var timeZone: Long
-//var id: String
-//var name: String
-//var code: String
