@@ -10,9 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -45,39 +42,65 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
         val item = items[position]
 
         holder.dailyTempMax.get()?.text = "${item.main.getDouble("temp_max").roundToInt()}\u00B0"
-        holder.dailyTempDay.get()?.text = item.date.substring(0, 10)
-//        holder.dailyTempDay.get()?.text = "${convertDateToDay(item.date)}".toLowerCase(Locale.ENGLISH).capitalize()
+        holder.dailyTempDay.get()?.text = "${convertDateToDay(item.date)}"
 
-        if(item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
-            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+        when (item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
+            true -> {
+                holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+            }
+            false -> {
+                when (item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
+                    true -> {
+                        holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.clear))
+                    }
+                    false -> {
+                        when (item.weather.getJSONObject(0).getString("main").contains("rain", true)) {
+                            true -> {
+                                holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.rain))
+                            }
+                        }
+                    }
+                }
+            }
+
         }
-        else if(item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
-            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.clear))
 
-        }
-        else if(item.weather.getJSONObject(0).getString("main").contains("rain", true)) {
-            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.rain))
-        }
-
-
-
-//        holder.bind(item)
+//        if(item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
+//            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+//        }
+//        else if(item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
+//            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.clear))
+//
+//        }
+//        else if(item.weather.getJSONObject(0).getString("main").contains("rain", true)) {
+//            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.rain))
+//        }
     }
 
-    fun convertDateToDay(date: String): DayOfWeek? {
+    fun convertDateToDay(date: String): String? {
 
         val calendar = Calendar.getInstance()
+        val todayFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+        calendar.time = todayFormat.parse(date)
 
-//        var simpleFormat =  DateTimeFormatter.ISO_DATE;
-//        val todayFormat = SimpleDateFormat("HH:mm \tEEEE, dd/MMMM/yyyy ")
-
-        val todayFormat = SimpleDateFormat("dd/MMMM/yyyy HH:mm:ss")
-
-        var convertedDate = LocalDate.parse(date.substring(0, 10), DateTimeFormatter.ISO_DATE)
-
-        return convertedDate.dayOfWeek
-
+        return getDayString(calendar.get(Calendar.DAY_OF_WEEK))
     }
+
+
+    fun getDayString(day: Int): String? {
+        when (day) {
+            1 -> { return "Monday" }
+            2 -> { return "Tuesday" }
+            3 -> { return "Wednesday" }
+            4 -> { return "Thursday" }
+            5 -> { return "Friday" }
+            6 -> { return "Saturday" }
+            7 -> { return "Sunday" }
+        }
+        return ""
+    }
+
+
 
     class ViewHolder : RecyclerView.ViewHolder {
         var dailyTempDay: WeakReference<TextView>
