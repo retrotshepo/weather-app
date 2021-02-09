@@ -1,11 +1,14 @@
 package za.co.weather.weather_app.views
 
+import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import za.co.weather.weather_app.R
+import za.co.weather.weather_app.util.CustomLocationListener
 import za.co.weather.weather_app.util.WeatherAPIEndpoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +50,13 @@ class WeatherScreen : Fragment() {
 
         temp_day_container.setOnClickListener {
             println("tuts een twe")
-            apitest()
+//            apitest()
+
+            val gps = CustomLocationListener(requireContext())
+            gps.getCurrentLoc()
+
+            println("lat: ${gps.currentLocation?.latitude} \tlon: lon: ${gps.currentLocation?.longitude}")
+
         }
     }
 
@@ -86,8 +96,8 @@ class WeatherScreen : Fragment() {
                 }
 
 
-                println(" sunrise ${convertLongToTime(current?.sys?.getLong("sunrise"))}")
-                println(" sunset ${convertLongToTime(current?.sys?.getLong("sunset"))}")
+//                println(" sunrise ${convertLongToTime(current?.sys?.getLong("sunrise"))}")
+//                println(" sunset ${convertLongToTime(current?.sys?.getLong("sunset"))}")
                 println(res)
 
             }
