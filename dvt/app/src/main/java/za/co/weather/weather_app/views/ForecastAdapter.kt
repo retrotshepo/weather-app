@@ -44,9 +44,9 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.dailyTempMax.get()?.text = "${item.main.getDouble("temp_max").roundToInt()}"
-//        holder.dailyTempDay.get()?.text = item.date
-        holder.dailyTempDay.get()?.text = "${convertDateToDay(item.date)}".toLowerCase(Locale.ENGLISH).capitalize()
+        holder.dailyTempMax.get()?.text = "${item.main.getDouble("temp_max").roundToInt()}\u00B0"
+        holder.dailyTempDay.get()?.text = item.date.substring(0, 10)
+//        holder.dailyTempDay.get()?.text = "${convertDateToDay(item.date)}".toLowerCase(Locale.ENGLISH).capitalize()
 
         if(item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
             holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
