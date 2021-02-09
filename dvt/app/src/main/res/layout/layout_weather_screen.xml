@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,8 +20,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/margin_medium"
-            >
+            android:paddingBottom="@dimen/margin_medium">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/background_main"
@@ -41,13 +39,13 @@
                     android:layout_marginTop="@dimen/margin_xlarge"
 
                     android:gravity="center"
-                    tools:text="25"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_xxxlarge"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="25" />
 
 
                 <TextView
@@ -57,14 +55,14 @@
                     android:layout_marginTop="@dimen/margin_small"
 
                     android:gravity="center"
-                    tools:text="SUNNY"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_large"
                     android:textStyle="bold"
-
                     app:layout_constraintEnd_toEndOf="parent"
+
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/temp_number_main" />
+                    app:layout_constraintTop_toBottomOf="@+id/temp_number_main"
+                    tools:text="SUNNY" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -84,13 +82,13 @@
                     android:layout_height="wrap_content"
 
                     android:gravity="center"
-                    tools:text="15\nmin"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_medium"
-
                     app:layout_constraintBottom_toBottomOf="parent"
+
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="15\nmin" />
 
                 <TextView
                     android:id="@+id/temp_max_text"
@@ -98,13 +96,13 @@
                     android:layout_height="wrap_content"
 
                     android:gravity="center"
-                    tools:text="30\nmax"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_medium"
-
                     app:layout_constraintBottom_toBottomOf="parent"
+
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="30\nmax" />
 
                 <TextView
                     android:id="@+id/temp_curr_text"
@@ -112,14 +110,14 @@
                     android:layout_height="wrap_content"
 
                     android:gravity="center"
-                    tools:text="24\ncurrent"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_medium"
-
                     app:layout_constraintBottom_toBottomOf="parent"
+
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="24\ncurrent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
@@ -137,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/margin_xxsmall"
-                android:visibility="visible"
+                android:visibility="gone"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -145,98 +143,90 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
-
-
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
                 android:id="@+id/curr_pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
 
-                tools:text="Pressure\n1024 hPa"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small"
-
-                app:layout_constraintTop_toBottomOf="@+id/curr_location"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/curr_humidity"
-                />
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/curr_location"
+                tools:text="Pressure\n1024 hPa" />
 
             <TextView
+                android:id="@+id/curr_humidity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                android:id="@+id/curr_humidity"
 
-                tools:text="Humidity\n67%"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small"
-
-                app:layout_constraintTop_toBottomOf="@+id/curr_location"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toEndOf="@+id/curr_pressure"
+                app:layout_constraintTop_toBottomOf="@+id/curr_location"
+                tools:text="Humidity\n67%"
 
                 />
 
             <TextView
+                android:id="@+id/curr_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                android:id="@+id/curr_location"
 
                 android:text="Unknown"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small"
 
-                app:layout_constraintTop_toBottomOf="@+id/recycler_view_daily_forecast"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/recycler_view_daily_forecast" />
 
             <ImageView
+                android:id="@+id/curr_location_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_xxsmall"
-                android:id="@+id/curr_location_icon"
 
                 android:src="@drawable/ic_baseline_location_on_white_24"
 
-                app:layout_constraintEnd_toStartOf="@+id/curr_location"
-                app:layout_constraintTop_toTopOf="@+id/curr_location"
                 app:layout_constraintBottom_toBottomOf="@+id/curr_location"
-                />
+                app:layout_constraintEnd_toStartOf="@+id/curr_location"
+                app:layout_constraintTop_toTopOf="@+id/curr_location" />
 
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
                 android:id="@+id/curr_visibility"
-
-                tools:text="Visibility\n6Km"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_small"
-
-                app:layout_constraintTop_toBottomOf="@+id/curr_pressure"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/curr_feel"
-                />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                android:id="@+id/curr_feel"
 
-                tools:text="Feels like\n6Km"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_small"
+                app:layout_constraintEnd_toEndOf="parent"
 
+                app:layout_constraintStart_toEndOf="@+id/curr_feel"
                 app:layout_constraintTop_toBottomOf="@+id/curr_pressure"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/curr_visibility"
-                />
+                tools:text="Visibility\n6Km" />
 
+            <TextView
+                android:id="@+id/curr_feel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_small"
+                app:layout_constraintEnd_toStartOf="@+id/curr_visibility"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/curr_pressure"
+                tools:text="Feels like\n6Km" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
