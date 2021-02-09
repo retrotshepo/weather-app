@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.util.CustomLocationListener
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.create
 import za.co.weather.weather_app.util.NetworkState.Companion.isMobileDataConnected
 import za.co.weather.weather_app.util.NetworkState.Companion.isWiFiConnected
 import za.co.weather.weather_app.util.WeatherAPIEndpoint
@@ -54,20 +55,6 @@ class WeatherScreen : Fragment() {
 
         temp_day_container.setOnClickListener {
             println("tuts een twe")
-
-
-
-//            println("latme: ${gps.getLocation()?.latitude} \tlonme: ${gps.getLocation()?.longitude}")
-
-
-
-//            println("lat: ${gps.currentLocation?.latitude} \tlon: lon: ${gps.currentLocation?.longitude}")
-
-
-
-
-
-
         }
     }
 
@@ -107,7 +94,6 @@ class WeatherScreen : Fragment() {
                         "${res.getLong("id")}", res.getString("name"),
                         "${res.getInt("cod")}"
                     )
-
                 }
 
                 println(res)
@@ -158,6 +144,8 @@ forecast = arrayListOf()
         if(currentTemperatureData == null || temp_number_main == null) {
             return
         }
+
+//        create(currentTemperatureData)
 
         temp_number_main.text = "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0"
         temp_condition_main.text = currentTemperatureData.weather.getJSONObject(0)
