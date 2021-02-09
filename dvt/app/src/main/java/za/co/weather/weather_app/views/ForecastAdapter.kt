@@ -65,16 +65,6 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
 
         }
 
-//        if(item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
-//            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
-//        }
-//        else if(item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
-//            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.clear))
-//
-//        }
-//        else if(item.weather.getJSONObject(0).getString("main").contains("rain", true)) {
-//            holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.rain))
-//        }
     }
 
     fun convertDateToDay(date: String): String? {
