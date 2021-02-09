@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'realm-android'
 }
 
 android {
@@ -49,4 +51,7 @@ dependencies {
 
     def lifecycle_version = '2.2.0-alpha01'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+
+    implementation 'io.realm:android-adapters:2.1.0'
+
 }
