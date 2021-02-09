@@ -207,6 +207,36 @@
                 />
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:id="@+id/curr_visibility"
+
+                tools:text="Visibility\n6Km"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_small"
+
+                app:layout_constraintTop_toBottomOf="@+id/curr_pressure"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/curr_feel"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:id="@+id/curr_feel"
+
+                tools:text="Feels like\n6Km"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_small"
+
+                app:layout_constraintTop_toBottomOf="@+id/curr_pressure"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/curr_visibility"
+                />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

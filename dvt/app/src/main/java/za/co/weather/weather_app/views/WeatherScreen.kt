@@ -148,6 +148,9 @@ forecast = arrayListOf()
         curr_location.text = "${currentTemperatureData.name}, ${currentTemperatureData.sys.getString("country")}"
         curr_humidity.text = "HUMIDITY\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
         curr_pressure.text = "PRESSURE\n${currentTemperatureData.main.getDouble("pressure").roundToInt()}hPa"
+
+        curr_feel.text = "FEELS LIKE\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
+        curr_visibility.text = "VISIBILITY\n${(currentTemperatureData.visibility/1000)}km"
 //        location_text.text = "hello world"
 
         if(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
