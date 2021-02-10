@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 
-class NetworkState  {
+class Network  {
 
     companion object {
 

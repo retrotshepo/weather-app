@@ -35,5 +35,12 @@ class SideNavigationOptions {
             transaction.replace(holder, fragment)
             transaction.commit()
         }
+
+        fun reloadCurrentFragment(activity: AppCompatActivity, fragment: Fragment) {
+            val transaction = activity.supportFragmentManager.beginTransaction()
+            transaction.detach(fragment)
+            transaction.attach(fragment)
+            transaction.commit()
+        }
     }
 }

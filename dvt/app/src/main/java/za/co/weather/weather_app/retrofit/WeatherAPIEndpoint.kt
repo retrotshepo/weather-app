@@ -1,5 +1,7 @@
 package za.co.weather.weather_app.util
 
+import za.co.weather.weather_app.retrofit.RetrofitService
+
 class WeatherAPIEndpoint {
 
     companion object {

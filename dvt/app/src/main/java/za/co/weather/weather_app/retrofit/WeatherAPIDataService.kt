@@ -2,7 +2,7 @@ package za.co.weather.weather_app.util
 
 import retrofit2.http.GET
 import retrofit2.http.Query
-import za.co.weather.weather_app.util.RetrofitService.Companion.END_POINT_PREFIX
+import za.co.weather.weather_app.retrofit.RetrofitService.Companion.END_POINT_PREFIX
 
 interface WeatherAPIDataService {
 
