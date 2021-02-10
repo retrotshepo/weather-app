@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">weather-app</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="search">Search for city</string>
+    <string name="search_not_found">City not found.</string>
+    <string name="search_waiting">Searching, please wait.</string>
+    <string name="search_found">City found, OK.</string>
+    <string name="search_cannot_save">Please search for a valid city first before saving.</string>
+
+    <string name="main_quit_app">Tap again to exit.</string>
+    <string name="fav_nothing_saved">Nothing saved - yet. <br></br> Try adding and viewing a city by clicking the + below.</string>
+
+    <string name="msg_loading">Loading, please wait.</string>
+    <string name="gps_not_enabled">Please grant GPS permission.</string>
+    <string name="internet_not_stable">No stable internet connection to update.</string>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/main_options"
+        android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/action_home"
+            android:enabled="true"
+            android:title="Home"
+            android:icon="@drawable/ic_baseline_home_black_24"
+            android:visible="true" />
+
+        <item
+            android:id="@+id/action_favourite_locations"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_favorite_black_24"
+            android:title="Favourites"
+            android:visible="true" />
+
+    </group>
+
+</menu>
