@@ -55,6 +55,7 @@ class WeatherScreen : Fragment() {
 
         burger_menu.setOnClickListener {
             activity?.weather_drawer_layout?.openDrawer(GravityCompat.START)
+            Toast.makeText(requireContext(), getString(R.string.msg_loading), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -79,8 +80,7 @@ class WeatherScreen : Fragment() {
                 }
             }
         } else {
-            Toast.makeText(requireContext(), "Please grant GPS permission", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(requireContext(), getString(R.string.gps_not_enabled), Toast.LENGTH_LONG).show()
         }
     }
 

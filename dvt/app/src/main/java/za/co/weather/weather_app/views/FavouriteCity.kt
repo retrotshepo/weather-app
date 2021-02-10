@@ -69,7 +69,7 @@ class FavouriteCity : Fragment() {
                 }
             }
         } else {
-            Toast.makeText(requireContext(), "Please grant GPS permission", Toast.LENGTH_LONG)
+            Toast.makeText(requireContext(), getString(R.string.gps_not_enabled), Toast.LENGTH_LONG)
                 .show()
         }
     }

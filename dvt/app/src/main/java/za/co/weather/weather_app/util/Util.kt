@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.model.DailyTemperatureData
 import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint
@@ -150,7 +152,7 @@ class Util {
                 false -> {
                     Toast.makeText(
                         componentActivity,
-                        "No stable internet connection to update",
+                        (componentActivity as AppCompatActivity).getString(R.string.internet_not_stable),
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -245,7 +247,7 @@ class Util {
                 false -> {
                     Toast.makeText(
                         componentActivity,
-                        "No stable internet connection to update",
+                        (componentActivity as AppCompatActivity).getString(R.string.internet_not_stable),
                         Toast.LENGTH_LONG
                     ).show()
                 }
