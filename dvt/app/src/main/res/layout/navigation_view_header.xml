@@ -6,15 +6,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:background="@drawable/navigation_view_header_background">
+    android:background="@drawable/main_background_cloud">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_xsmall"
         android:id="@+id/location_text"
-        android:text="Phuthaditjhaba"
+        android:text="Weather App"
         android:textColor="@color/white"
+        android:textSize="@dimen/text_medium"
 
         app:layout_constraintTop_toTopOf="@+id/location_icon"
         app:layout_constraintBottom_toBottomOf="@+id/location_icon"
@@ -22,12 +23,12 @@
         />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/margin_xlarge"
+        android:layout_height="@dimen/margin_xlarge"
         android:layout_margin="@dimen/margin_small"
 
         android:id="@+id/location_icon"
-        android:src="@drawable/ic_baseline_location_on_white_24"
+        android:src="@drawable/clear"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
