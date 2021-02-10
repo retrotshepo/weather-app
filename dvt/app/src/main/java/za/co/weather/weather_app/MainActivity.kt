@@ -1,36 +1,41 @@
 package za.co.weather.weather_app
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.initialize
-import za.co.weather.weather_app.util.SideNavigationOptions.Companion.favouritesScreen
-import za.co.weather.weather_app.util.SideNavigationOptions.Companion.homeScreen
-import kotlin.concurrent.fixedRateTimer
+import za.co.weather.weather_app.util.NavigationRoutes.Companion.favouritesScreen
+import za.co.weather.weather_app.util.NavigationRoutes.Companion.homeScreen
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var doubleBackToExitPressedOnce = false
-    var toggle: ActionBarDrawerToggle? = null
+    private val permissionsRequestCode = 10
+    private val sensitivePermissions = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,   Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE
+    )
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initialize("dvt-weather.db", applicationContext)
+        grantMultiplePermissions()
 
-//        toggle = ActionBarDrawerToggle(
-//            this, weather_drawer_layout, main_toolbar,
-//            R.string.navigation_drawer_open,
-//            R.string.navigation_drawer_close)
     }
 
     override fun onResume() {
@@ -51,10 +56,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (supportFragmentManager.backStackEntryCount <= 1) {
 
-//            if (weather_drawer_layout.isDrawerOpen(GravityCompat.START)) {
-//                weather_drawer_layout.closeDrawer(GravityCompat.START)
-//                return
-//            }
+            if (weather_drawer_layout.isDrawerOpen(GravityCompat.START)) {
+                weather_drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
 
             if (doubleBackToExitPressedOnce) {
                 finish()
@@ -62,7 +67,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             doubleBackToExitPressedOnce = true
-            Toast.makeText(this, "Tap again to exit", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.main_quit_app), Toast.LENGTH_SHORT).show()
 
             val h = Handler()
             h.postDelayed({
@@ -87,15 +92,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-
-//        if (id == R.id.action_home) {
-//            homeScreen(this)
-//        }
-//        else if (id == R.id.action_favourite_locations) {
-//            favouritesScreen(this)
-//        }
-
         weather_drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun hasPermissions(context: Context?, permissions: Array<String>?): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            permissions.forEach { perm ->
+                if (ActivityCompat.checkSelfPermission(context, perm) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun grantMultiplePermissions() {
+        if (!hasPermissions(this, sensitivePermissions)) {
+            ActivityCompat.requestPermissions(this, sensitivePermissions, permissionsRequestCode)
+        }
     }
 }

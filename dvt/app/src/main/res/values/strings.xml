@@ -8,6 +8,14 @@
 
     <string name="search">Search for city</string>
     <string name="search_not_found">City not found.</string>
+    <string name="search_waiting">Searching, please wait.</string>
+    <string name="search_found">City found, OK.</string>
+
+
+
+
+
+    <string name="main_quit_app">Tap again to exit.</string>
 
 
     

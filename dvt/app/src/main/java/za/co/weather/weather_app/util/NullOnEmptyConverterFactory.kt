@@ -23,6 +23,5 @@ class NullOnEmptyConverterFactory {
                     if (value.contentLength() != 0L) nextResponseBodyConverter.convert(value) else null
             }
         }
-
     }
 }

@@ -8,8 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
+import za.co.weather.weather_app.model.CurrentTemperatureData
 import java.lang.ref.WeakReference
-import java.util.ArrayList
+import java.util.*
 import kotlin.math.roundToInt
 
 class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder> {
@@ -32,7 +33,7 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_favourite_location, parent, false)
+            .inflate(R.layout.item_favourite_location, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -44,37 +45,35 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder> {
         val item = items[position]
 
         holder.favouriteCity.get()?.text = "${item.name}"
-        holder.favouriteMinMax.get()?.text = "${item.main.getDouble("temp_max").roundToInt()}\u00B0 / ${item.main.getDouble("temp_min").roundToInt()}\u00B0"
+        holder.favouriteMinMax.get()?.text = "${item.main.getDouble("temp_max")
+            .roundToInt()}\u00B0 / ${item.main.getDouble("temp_min").roundToInt()}\u00B0"
         holder.favouriteCurrent.get()?.text = "${item.main.getDouble("temp").roundToInt()}\u00B0"
 
         when (item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
             true -> {
-                holder.favouriteIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+                holder.favouriteIcon.get()
+                    ?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
             }
             false -> {
                 when (item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
                     true -> {
-                        holder.favouriteIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.clear))
+                        holder.favouriteIcon.get()
+                            ?.setImageDrawable(context.getDrawable(R.drawable.clear))
                     }
                     false -> {
-                        when (item.weather.getJSONObject(0).getString("main").contains("rain", true)) {
+                        when (item.weather.getJSONObject(0).getString("main")
+                            .contains("rain", true)) {
                             true -> {
-                                holder.favouriteIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.rain))
+                                holder.favouriteIcon.get()
+                                    ?.setImageDrawable(context.getDrawable(R.drawable.rain))
                             }
                         }
                     }
                 }
             }
-
         }
 
-
-
-        /**
-         * bind view holder to enable clicks.
-         */
         holder.bind(item, listener)
-
     }
 
     class ViewHolder : RecyclerView.ViewHolder {

@@ -1,4 +1,4 @@
-package za.co.weather.weather_app.views
+package za.co.weather.weather_app.model
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey

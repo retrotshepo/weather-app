@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
+import za.co.weather.weather_app.model.DailyTemperatureData
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,10 +21,13 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
 
     constructor(
         context: Context,
-        items: ArrayList<DailyTemperatureData>
+        items: ArrayList<DailyTemperatureData>?
     ) : super() {
         this.context = context
-        this.items = items
+        this.items = arrayListOf()
+        if (!items.isNullOrEmpty()) {
+            this.items = items
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,28 +50,30 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
 
         when (item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
             true -> {
-                holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+                holder.dailyTempIcon.get()
+                    ?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
             }
             false -> {
                 when (item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
                     true -> {
-                        holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.clear))
+                        holder.dailyTempIcon.get()
+                            ?.setImageDrawable(context.getDrawable(R.drawable.clear))
                     }
                     false -> {
-                        when (item.weather.getJSONObject(0).getString("main").contains("rain", true)) {
+                        when (item.weather.getJSONObject(0).getString("main")
+                            .contains("rain", true)) {
                             true -> {
-                                holder.dailyTempIcon.get()?.setImageDrawable(context.getDrawable(R.drawable.rain))
+                                holder.dailyTempIcon.get()
+                                    ?.setImageDrawable(context.getDrawable(R.drawable.rain))
                             }
                         }
                     }
                 }
             }
-
         }
-
     }
 
-    fun convertDateToDay(date: String): String? {
+    private fun convertDateToDay(date: String): String? {
 
         val calendar = Calendar.getInstance()
         val todayFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
@@ -77,7 +83,7 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
     }
 
 
-    fun getDayString(day: Int): String? {
+    private fun getDayString(day: Int): String? {
         when (day) {
             1 -> { return "Monday" }
             2 -> { return "Tuesday" }
@@ -89,8 +95,6 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
         }
         return ""
     }
-
-
 
     class ViewHolder : RecyclerView.ViewHolder {
         var dailyTempDay: WeakReference<TextView>

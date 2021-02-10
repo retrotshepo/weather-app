@@ -5,8 +5,8 @@ import io.realm.Realm
 import io.realm.RealmConfiguration
 import org.json.JSONArray
 import org.json.JSONObject
-import za.co.weather.weather_app.views.CurrentTemperatureData
-import za.co.weather.weather_app.views.FavouriteObject
+import za.co.weather.weather_app.model.CurrentTemperatureData
+import za.co.weather.weather_app.model.FavouriteObject
 
 class LocalDBHandler {
 
@@ -26,24 +26,21 @@ class LocalDBHandler {
 
         fun create(current: CurrentTemperatureData?) {
 
-            if(current == null) {
+            if (current == null) {
                 return
             }
-            var realm : Realm? = null
+            var realm: Realm? = null
             try {
 
                 realm = Realm.getDefaultInstance()
 
                 val reFave = realm.where(FavouriteObject::class.java)
                     .equalTo("name", current.name)
-//                    .equalTo("sys", current.sys.toString())
                     .findFirst()
-
-//                val reFavess = realm.where(FavouriteObject::class.java).findAll()
 
                 if (reFave == null) {
                     val millis = System.currentTimeMillis()
-                    realm.executeTransaction {rlm ->
+                    realm.executeTransaction { rlm ->
                         val newFav = rlm.createObject(FavouriteObject::class.java, millis)
                         newFav.name = current.name
                         newFav.coordinates = current.coordinates.toString()
@@ -58,13 +55,11 @@ class LocalDBHandler {
             } finally {
                 closeRealmInstance(realm)
             }
-
         }
 
         fun read(): ArrayList<CurrentTemperatureData> {
 
-            var array= arrayListOf<CurrentTemperatureData>()
-
+            val array = arrayListOf<CurrentTemperatureData>()
             var realm: Realm? = null
 
             try {
@@ -74,12 +69,25 @@ class LocalDBHandler {
                 val reCities = realm.where(FavouriteObject::class.java)
                     .findAll()
 
-                if(reCities.isLoaded) {
+                if (reCities.isLoaded) {
 
                     reCities.forEach { c ->
-                        val nCurrentTemperatureData = CurrentTemperatureData(JSONObject(c.coordinates),
-                            JSONArray(c.weather), "", JSONObject(c.main), 0.0,JSONObject(), JSONObject(),
-                            "",JSONObject(c.sys), 0L, "", c.name, "")
+                        val nCurrentTemperatureData =
+                            CurrentTemperatureData(
+                                JSONObject(c.coordinates),
+                                JSONArray(c.weather),
+                                "",
+                                JSONObject(c.main),
+                                0.0,
+                                JSONObject(),
+                                JSONObject(),
+                                "",
+                                JSONObject(c.sys),
+                                0L,
+                                "",
+                                c.name,
+                                ""
+                            )
 
                         array.add(nCurrentTemperatureData)
                     }
@@ -88,42 +96,73 @@ class LocalDBHandler {
             } catch (e: Exception) {
                 println(e.message)
             } finally {
-                closeRealmInstance(realm)
+//                closeRealmInstance(realm)
             }
             return array
         }
 
+        fun update(city: String, current: CurrentTemperatureData?) {
+
+            if (city.isNullOrBlank() || current == null) {
+                return
+            }
+
+            var realm: Realm? = null
+            try {
+
+                realm = Realm.getDefaultInstance()
+
+                val reFaves = realm.where(FavouriteObject::class.java)
+                    .equalTo("name", city)
+                    .findFirst()
+
+                if (reFaves != null) {
+                    realm.executeTransaction {
+                        reFaves.name = current.name
+                        reFaves.coordinates = current.coordinates.toString()
+                        reFaves.main = current.main.toString()
+                        reFaves.weather = current.weather.toString()
+                        reFaves.sys = current.sys.toString()
+                    }
+                }
+
+            } catch (e: Exception) {
+                println(e.message)
+            } finally {
+                closeRealmInstance(realm)
+            }
+        }
+
         fun delete(city: String, country: String) {
 
-                var realm : Realm? = null
-                try {
+            var realm: Realm? = null
+            try {
 
-                    realm = Realm.getDefaultInstance()
+                realm = Realm.getDefaultInstance()
 
-                    val reFaves = realm.where(FavouriteObject::class.java)
-                        .equalTo("name", city)
-                        .findAll()
+                val reFaves = realm.where(FavouriteObject::class.java)
+                    .equalTo("name", city)
+                    .findAll()
 
-                    if (reFaves.isLoaded && !reFaves.isNullOrEmpty()) {
-                        realm.executeTransaction {
-                            reFaves.forEach { r ->
-                                if(JSONObject(r.sys).getString("country").compareTo(country) == 0) {
-                                    r.deleteFromRealm()
-                                }
+                if (reFaves.isLoaded && !reFaves.isNullOrEmpty()) {
+                    realm.executeTransaction {
+                        reFaves.forEach { r ->
+                            if (JSONObject(r.sys).getString("country").compareTo(country) == 0) {
+                                r.deleteFromRealm()
                             }
                         }
                     }
-
-                } catch (e: Exception) {
-                    println(e.message)
-                } finally {
-                    closeRealmInstance(realm)
                 }
 
+            } catch (e: Exception) {
+                println(e.message)
+            } finally {
+                closeRealmInstance(realm)
+            }
         }
 
         private fun closeRealmInstance(rlm: Realm?) {
-            if(rlm != null) rlm.close() else println("realm closed")
+            if (rlm != null) rlm.close() else println("realm closed")
         }
     }
 }

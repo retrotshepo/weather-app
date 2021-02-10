@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -13,68 +12,48 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.content_favourites.*
 import kotlinx.android.synthetic.main.layout_favourites.*
-import kotlinx.android.synthetic.main.layout_weather_screen.*
 import za.co.weather.weather_app.R
-import za.co.weather.weather_app.util.CustomLocationListener
+import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.delete
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.read
-import za.co.weather.weather_app.util.SideNavigationOptions.Companion.cityScreen
-import za.co.weather.weather_app.util.SideNavigationOptions.Companion.searchScreen
+import za.co.weather.weather_app.util.NavigationRoutes.Companion.cityScreen
+import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
+import za.co.weather.weather_app.util.NavigationRoutes.Companion.searchScreen
+import za.co.weather.weather_app.util.Util.Companion.cityName
 
 class Favourites : Fragment() {
 
     var alertDialog: AlertDialog? = null
 
-//    override fun onCreateView(inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        return super.onCreateView(inflater, container, savedInstanceState)
-//    }
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//    }
-
-
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         return inflater.inflate(R.layout.layout_favourites, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("WeatherScreen onViewCreated")
 
-        val all = read()
-
-        /**
-         * setting up adapter.
-         */
-        val forecastAdapter = FavouritesAdapter(requireContext(), all, object : FavouritesAdapter.OnItemClickListener{
-            override fun onItemClicked(current: CurrentTemperatureData) {
-
-                Toast.makeText(requireContext(), "${current.name}\t${current.sys.getString("country")}", Toast.LENGTH_LONG).show()
-                method(current.name, current.sys.getString("country"))
-
-
-            }
-        })
+        val forecastAdapter = FavouritesAdapter(
+            requireContext(),
+            read(),
+            object : FavouritesAdapter.OnItemClickListener {
+                override fun onItemClicked(current: CurrentTemperatureData) {
+                    launchDialog(current.name, current.sys.getString("country"))
+                }
+            })
 
         recycler_view_favourites.visibility = ViewGroup.VISIBLE
         recycler_view_favourites.adapter = forecastAdapter
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view_favourites.layoutManager = layoutManager
-
     }
 
     override fun onResume() {
         super.onResume()
-
         fav_floating_button.setOnClickListener {
-
             searchScreen(requireActivity() as AppCompatActivity)
         }
     }
@@ -93,35 +72,32 @@ class Favourites : Fragment() {
         }
     }
 
-    fun method(city: String, country: String) {
-
+    fun launchDialog(city: String, country: String) {
 
         alertDialog = (activity as AppCompatActivity).let {
             val builder = AlertDialog.Builder(it)
             builder.apply {
                 setPositiveButton("View",
                     DialogInterface.OnClickListener { dialog, id ->
+                        cityName = city
                         cityScreen(it)
                     })
                 setNegativeButton("Remove",
                     DialogInterface.OnClickListener { dialog, id ->
                         delete(city, country)
+                        reloadCurrentFragment(it, this@Favourites)
                     })
-//                setNeutralButton("",
-//                    DialogInterface.OnClickListener { dialog, id ->
-//
-//                })
-
-                setTitle("Selection")
-                setMessage("Location")
+                setNeutralButton("Cancel",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        alertDialog?.dismiss()
+                    })
+                setTitle("Selected City")
+                setMessage("$city, $country")
             }
             builder.create()
         }
 
         alertDialog?.setCancelable(false)
         alertDialog?.show()
-
     }
-
-
 }

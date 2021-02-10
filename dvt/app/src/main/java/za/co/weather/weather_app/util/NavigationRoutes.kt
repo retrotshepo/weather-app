@@ -8,7 +8,7 @@ import za.co.weather.weather_app.views.Favourites
 import za.co.weather.weather_app.views.SearchCity
 import za.co.weather.weather_app.views.WeatherScreen
 
-class SideNavigationOptions {
+class NavigationRoutes {
 
     companion object {
 

@@ -1,5 +1,7 @@
 package za.co.weather.weather_app.views
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -7,29 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.internal.LinkedTreeMap
 import kotlinx.android.synthetic.main.layout_weather_screen.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONObject
+import kotlinx.coroutines.runBlocking
 import za.co.weather.weather_app.R
-import za.co.weather.weather_app.util.NetworkState
-import za.co.weather.weather_app.util.NetworkState.Companion.isMobileDataConnected
-import za.co.weather.weather_app.util.NetworkState.Companion.isWiFiConnected
-import za.co.weather.weather_app.util.WeatherAPIEndpoint
+import za.co.weather.weather_app.model.CurrentTemperatureData
+import za.co.weather.weather_app.model.DailyTemperatureData
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.update
+import za.co.weather.weather_app.util.Util
+import za.co.weather.weather_app.util.Util.Companion.cityName
+import za.co.weather.weather_app.util.Util.Companion.makeApiCall
 import java.util.*
 import kotlin.math.roundToInt
 
 class FavouriteCity : Fragment() {
 
     private var current: CurrentTemperatureData? = null
-    var forecast = arrayListOf<DailyTemperatureData>()
+    private var forecast: ArrayList<DailyTemperatureData>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -37,92 +36,30 @@ class FavouriteCity : Fragment() {
         return inflater.inflate(R.layout.layout_weather_screen, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        println("FavouriteCity onViewCreated")
-        callWeatherEndpoints(0.0, 0.0)
-    }
-
-    fun callWeatherEndpoints(lat: Double?, lon: Double?) {
-        println("api test\tlat: $lat ; lon: $lon")
-
-        if (lat == null || lon == null) {
-            return
-        }
-
-        if(!isMobileDataConnected(requireContext()) && !isWiFiConnected(requireContext())
-        ) {
-            Toast.makeText(requireContext(), "No stable internet connection to update", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        this@FavouriteCity.lifecycleScope.launch (Dispatchers.IO) {
-
-//                [-26.5603, 27.8625] orange farm
+    //                [-26.5603, 27.8625] orange farm
 //            -26.1846304,28.0014622 ACK
 //            -33.9152208,18.3758763 CPT
 //            -30.7158878,30.3887406 NPS
-            val resCurrent = WeatherAPIEndpoint.getWeatherCityCALL()
-            val resForecast = WeatherAPIEndpoint.getWeatherCityForecastCALL()
+    override fun onResume() = runBlocking {
+        super.onResume()
 
-            if (resCurrent != null) {
+        if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
 
-                val res = serializeToJSONObject(resCurrent as LinkedTreeMap<Any, Any>)
+            if (Util.isWiFiConnected(requireContext()) || Util.isMobileDataConnected(requireContext())) {
 
-                if (res != null) {
-                    current = CurrentTemperatureData(
-                        res.getJSONObject("coord"), res.getJSONArray("weather"),
-                        res.getString("base"), res.getJSONObject("main"),
-                        res.getDouble("visibility"), res.getJSONObject("wind"),
-                        res.getJSONObject("clouds"), "${res.getDouble("dt")}",
-                        res.getJSONObject("sys"), res.getLong("timezone"),
-                        "${res.getLong("id")}", res.getString("name"),
-                        "${res.getInt("cod")}"
-                    )
+                val pair = makeApiCall(requireActivity(), cityName)
+                current = pair.first
+                forecast = pair.second
+
+                if (current != null && forecast != null) {
+                    updateScreen(current)
                 }
-
-                println(res)
-
             }
-
-            if (resForecast != null) {
-
-                val res = serializeToJSONObject(resForecast as LinkedTreeMap<Any, Any>)
-                forecast = arrayListOf()
-                if (res != null) {
-                    val list = res.getJSONArray("list")
-                    for(i in 0 until list.length()) {
-
-                        val item = list.getJSONObject(i)
-
-                        if(item.getString("dt_txt").contains("12:00")) {
-
-                            val entry = DailyTemperatureData(
-                                "${item.getDouble("dt")}",
-                                item.getJSONObject("main"),
-                                item.getJSONArray("weather"),
-                                item.getJSONObject("clouds"),
-                                item.getJSONObject("wind"),
-                                item.getDouble("visibility"),
-                                item.getDouble("pop"),
-                                if (item.has("rain")) item.getJSONObject("rain") else JSONObject(),
-                                item.getJSONObject("sys"),
-                                item.getString("dt_txt")
-                            )
-                            forecast.add(entry)
-
-                        }
-                    }
-
-                }
-
-                println(res)
-            }
+        } else {
+            Toast.makeText(requireContext(), "Please grant GPS permission", Toast.LENGTH_LONG)
+                .show()
         }
-        Handler().postDelayed({
-            updateScreen(current)
-        }, 3500)
     }
 
     private fun updateScreen(currentTemperatureData: CurrentTemperatureData?) {
@@ -131,15 +68,15 @@ class FavouriteCity : Fragment() {
             return
         }
 
-//        create(currentTemperatureData)
+        update(cityName, currentTemperatureData)
 
         temp_number_main.text = "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0"
         temp_condition_main.text = currentTemperatureData.weather.getJSONObject(0)
             .getString("main").toUpperCase(Locale.ENGLISH)
 
-        temp_min_text.text = "${currentTemperatureData.main.getDouble("temp_min")}\u00B0\nmin"
-        temp_curr_text.text = "${currentTemperatureData.main.getDouble("temp")}\u00B0\nCurrent"
-        temp_max_text.text = "${currentTemperatureData.main.getDouble("temp_max")}\u00B0\nmax"
+        temp_min_text.text = "${currentTemperatureData.main.getDouble("temp_min").roundToInt()}\u00B0\nmin"
+        temp_curr_text.text = "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0\nCurrent"
+        temp_max_text.text = "${currentTemperatureData.main.getDouble("temp_max").roundToInt()}\u00B0\nmax"
 
         curr_location.text = "${currentTemperatureData.name}, ${currentTemperatureData.sys.getString("country")}"
         curr_humidity.text = "HUMIDITY\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
@@ -148,18 +85,30 @@ class FavouriteCity : Fragment() {
         curr_feel.text = "FEELS LIKE\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
         curr_visibility.text = "VISIBILITY\n${(currentTemperatureData.visibility/1000)}km"
 
-        if(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
+        when(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
 
-            background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_cloudy)
-            main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_cloud)
-        }
-        else if(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("clear", true)) {
-            background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_sunny)
-            main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_clear)
-        }
-        else if(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("rain", true)) {
-            background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_rainy)
-            main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_rain)
+            true -> {
+                background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_cloudy)
+                main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_cloud)
+            }
+            false -> {
+                when(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("clear", true)) {
+
+                    true -> {
+                        background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_sunny)
+                        main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_clear)
+                    }
+                    false -> {
+                        when(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("rain", true)) {
+                            true -> {
+                                background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_rainy)
+                                main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_rain)
+                            }
+                            false -> { }
+                        }
+                    }
+                }
+            }
         }
 
         /**
@@ -172,16 +121,4 @@ class FavouriteCity : Fragment() {
         recycler_view_daily_forecast.layoutManager = layoutManager
 
     }
-
-    private fun serializeToJSONObject(linkedTreeMap: LinkedTreeMap<Any, Any>?) : JSONObject? {
-        val gson = Gson()
-        val json : JsonObject = gson.toJsonTree(linkedTreeMap).asJsonObject
-
-        println(json.javaClass)
-        println(json)
-
-        return JSONObject(json.toString())
-    }
-
-
 }

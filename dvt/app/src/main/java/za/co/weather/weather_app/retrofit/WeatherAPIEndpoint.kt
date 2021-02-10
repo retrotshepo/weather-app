@@ -1,6 +1,4 @@
-package za.co.weather.weather_app.util
-
-import za.co.weather.weather_app.retrofit.RetrofitService
+package za.co.weather.weather_app.retrofit
 
 class WeatherAPIEndpoint {
 
@@ -12,10 +10,10 @@ class WeatherAPIEndpoint {
         suspend fun getWeatherForecastCALL(latitude: Double, longitude: Double) =
             RetrofitService.getClient()?.getWeatherForecastDataAPI(latitude, longitude)
 
-        suspend fun getWeatherCityCALL(city: String = "Soweto") =
+        suspend fun getWeatherCityCALL(city: String) =
             RetrofitService.getClient()?.getWeatherCityAPI(city)
 
-        suspend fun getWeatherCityForecastCALL(city: String = "Soweto") =
+        suspend fun getWeatherCityForecastCALL(city: String) =
             RetrofitService.getClient()?.getWeatherCityForecastAPI(city)
     }
 }

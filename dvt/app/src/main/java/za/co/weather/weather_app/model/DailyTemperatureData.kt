@@ -1,4 +1,4 @@
-package za.co.weather.weather_app.views
+package za.co.weather.weather_app.model
 
 import org.json.JSONArray
 import org.json.JSONObject
