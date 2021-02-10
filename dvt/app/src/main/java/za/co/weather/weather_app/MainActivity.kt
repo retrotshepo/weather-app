@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         h.postDelayed({
             doubleBackToExitPressedOnce = false
         }, 1500)
-        return
 
         super.onBackPressed()
     }
