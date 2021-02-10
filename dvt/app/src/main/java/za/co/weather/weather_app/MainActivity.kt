@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var doubleBackToExitPressedOnce = false
     private val permissionsRequestCode = 10
     private val sensitivePermissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,   Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE
     )
 
@@ -54,23 +54,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onBackPressed() {
 
-        if (weather_drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            weather_drawer_layout.closeDrawer(GravityCompat.START)
+        if (supportFragmentManager.backStackEntryCount <= 1) {
+
+            if (weather_drawer_layout.isDrawerOpen(GravityCompat.START)) {
+                weather_drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
+
+            if (doubleBackToExitPressedOnce) {
+                finish()
+                return
+            }
+
+            doubleBackToExitPressedOnce = true
+            Toast.makeText(this, getString(R.string.main_quit_app), Toast.LENGTH_SHORT).show()
+
+            val h = Handler()
+            h.postDelayed({
+                doubleBackToExitPressedOnce = false
+            }, 1500)
             return
         }
-
-        if (doubleBackToExitPressedOnce) {
-            finish()
-            return
-        }
-
-        doubleBackToExitPressedOnce = true
-        Toast.makeText(this, getString(R.string.main_quit_app), Toast.LENGTH_SHORT).show()
-
-        val h = Handler()
-        h.postDelayed({
-            doubleBackToExitPressedOnce = false
-        }, 1500)
 
         super.onBackPressed()
     }
@@ -79,7 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val id = item.itemId
 
-        when (id) {
+        when(id) {
             R.id.action_home -> {
                 homeScreen(this)
             }
@@ -95,11 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun hasPermissions(context: Context?, permissions: Array<String>?): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             permissions.forEach { perm ->
-                if (ActivityCompat.checkSelfPermission(
-                        context,
-                        perm
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
+                if (ActivityCompat.checkSelfPermission(context, perm) != PackageManager.PERMISSION_GRANTED) {
                     return false
                 }
             }
