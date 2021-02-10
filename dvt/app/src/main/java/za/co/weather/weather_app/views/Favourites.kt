@@ -36,16 +36,27 @@ class Favourites : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val favourites = read()
         val forecastAdapter = FavouritesAdapter(
             requireContext(),
-            read(),
+            favourites,
             object : FavouritesAdapter.OnItemClickListener {
                 override fun onItemClicked(current: CurrentTemperatureData) {
                     launchDialog(current.name, current.sys.getString("country"))
                 }
             })
 
-        recycler_view_favourites.visibility = ViewGroup.VISIBLE
+        when(favourites.isNullOrEmpty()) {
+            true -> {
+                recycler_view_favourites.visibility = ViewGroup.GONE
+                fav_no_faves.visibility = ViewGroup.VISIBLE
+            }
+            false -> {
+                recycler_view_favourites.visibility = ViewGroup.VISIBLE
+                fav_no_faves.visibility = ViewGroup.GONE
+            }
+        }
+
         recycler_view_favourites.adapter = forecastAdapter
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view_favourites.layoutManager = layoutManager
@@ -77,7 +88,7 @@ class Favourites : Fragment() {
         alertDialog = (activity as AppCompatActivity).let {
             val builder = AlertDialog.Builder(it)
             builder.apply {
-                setPositiveButton("View",
+                setPositiveButton("Open",
                     DialogInterface.OnClickListener { dialog, id ->
                         cityName = city
                         cityScreen(it)

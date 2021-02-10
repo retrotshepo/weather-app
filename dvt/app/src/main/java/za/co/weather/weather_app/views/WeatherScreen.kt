@@ -73,8 +73,8 @@ class WeatherScreen : Fragment() {
                 val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
                 current = pair.first
                 forecast = pair.second
-                if (current != null && forecast != null) {
-
+//                if (current != null && forecast != null && current?.sys?.has("country")!!) {
+                if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
                     updateScreen(current)
                 }
             }
@@ -95,6 +95,7 @@ class WeatherScreen : Fragment() {
             return
         }
 
+        println(currentTemperatureData)
         temp_number_main.text =
             "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0"
         temp_condition_main.text = currentTemperatureData.weather.getJSONObject(0)

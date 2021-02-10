@@ -13,7 +13,7 @@ android:layout_margin="@dimen/margin_xxsmall"
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#808080"
+        android:background="@color/grey"
         >
 
         <TextView
