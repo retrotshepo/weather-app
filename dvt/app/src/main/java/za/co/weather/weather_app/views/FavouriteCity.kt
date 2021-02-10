@@ -3,7 +3,6 @@ package za.co.weather.weather_app.views
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.model.DailyTemperatureData
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.update
-import za.co.weather.weather_app.util.NavigationRoutes
+import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
 import za.co.weather.weather_app.util.Util
 import za.co.weather.weather_app.util.Util.Companion.cityName
 import za.co.weather.weather_app.util.Util.Companion.makeApiCall
@@ -34,8 +33,10 @@ class FavouriteCity : Fragment() {
     private var current: CurrentTemperatureData? = null
     private var forecast: ArrayList<DailyTemperatureData>? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         return inflater.inflate(R.layout.layout_weather_screen, container, false)
     }
@@ -44,7 +45,9 @@ class FavouriteCity : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btn_refresh.setOnClickListener {
-            NavigationRoutes.reloadCurrentFragment(requireActivity() as AppCompatActivity, this)
+            Toast.makeText(requireContext(), getString(R.string.msg_loading), Toast.LENGTH_LONG)
+                .show()
+            reloadCurrentFragment(requireActivity() as AppCompatActivity, this)
         }
 
         burger_menu.setOnClickListener {
@@ -55,8 +58,12 @@ class FavouriteCity : Fragment() {
     override fun onResume() = runBlocking {
         super.onResume()
 
-        if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
 
             if (Util.isWiFiConnected(requireContext()) || Util.isMobileDataConnected(requireContext())) {
 
@@ -76,47 +83,71 @@ class FavouriteCity : Fragment() {
 
     private fun updateScreen(currentTemperatureData: CurrentTemperatureData?) {
 
-        if(currentTemperatureData == null || temp_number_main == null) {
+        if (currentTemperatureData == null || temp_number_main == null) {
             return
         }
 
         update(cityName, currentTemperatureData)
 
-        temp_number_main.text = "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0"
+        temp_number_main.text =
+            "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0"
         temp_condition_main.text = currentTemperatureData.weather.getJSONObject(0)
             .getString("main").toUpperCase(Locale.ENGLISH)
 
-        temp_min_text.text = "${currentTemperatureData.main.getDouble("temp_min").roundToInt()}\u00B0\nmin"
-        temp_curr_text.text = "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0\nCurrent"
-        temp_max_text.text = "${currentTemperatureData.main.getDouble("temp_max").roundToInt()}\u00B0\nmax"
+        temp_min_text.text =
+            "${currentTemperatureData.main.getDouble("temp_min").roundToInt()}\u00B0\nmin"
+        temp_curr_text.text =
+            "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0\nCurrent"
+        temp_max_text.text =
+            "${currentTemperatureData.main.getDouble("temp_max").roundToInt()}\u00B0\nmax"
 
-        curr_location.text = "${currentTemperatureData.name}, ${currentTemperatureData.sys.getString("country")}"
-        curr_humidity.text = "HUMIDITY\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
-        curr_pressure.text = "PRESSURE\n${currentTemperatureData.main.getDouble("pressure").roundToInt()}hPa"
+        curr_location.text =
+            "${currentTemperatureData.name}, ${currentTemperatureData.sys.getString("country")}"
+        curr_humidity.text =
+            "HUMIDITY\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
+        curr_pressure.text =
+            "PRESSURE\n${currentTemperatureData.main.getDouble("pressure").roundToInt()}hPa"
 
-        curr_feel.text = "FEELS LIKE\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
-        curr_visibility.text = "VISIBILITY\n${(currentTemperatureData.visibility/1000)}km"
+        curr_feel.text =
+            "FEELS LIKE\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
+        curr_visibility.text = "VISIBILITY\n${(currentTemperatureData.visibility / 1000)}km"
 
-        when(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
+        when (currentTemperatureData.weather.getJSONObject(0).getString("main")
+            .contains("cloud", true)) {
 
             true -> {
-                background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_cloudy)
-                main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_cloud)
+                background_main.background =
+                    ActivityCompat.getDrawable(requireContext(), R.drawable.forest_cloudy)
+                main_layout.background =
+                    ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_cloud)
             }
             false -> {
-                when(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("clear", true)) {
+                when (currentTemperatureData.weather.getJSONObject(0).getString("main")
+                    .contains("clear", true)) {
 
                     true -> {
-                        background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_sunny)
-                        main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_clear)
+                        background_main.background =
+                            ActivityCompat.getDrawable(requireContext(), R.drawable.forest_sunny)
+                        main_layout.background = ActivityCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.main_background_clear
+                        )
                     }
                     false -> {
-                        when(currentTemperatureData.weather.getJSONObject(0).getString("main").contains("rain", true)) {
+                        when (currentTemperatureData.weather.getJSONObject(0).getString("main")
+                            .contains("rain", true)) {
                             true -> {
-                                background_main.background = ActivityCompat.getDrawable(requireContext(), R.drawable.forest_rainy)
-                                main_layout.background = ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_rain)
+                                background_main.background = ActivityCompat.getDrawable(
+                                    requireContext(),
+                                    R.drawable.forest_rainy
+                                )
+                                main_layout.background = ActivityCompat.getDrawable(
+                                    requireContext(),
+                                    R.drawable.main_background_rain
+                                )
                             }
-                            false -> { }
+                            false -> {
+                            }
                         }
                     }
                 }

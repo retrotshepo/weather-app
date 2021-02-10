@@ -50,12 +50,12 @@ class WeatherScreen : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btn_refresh.setOnClickListener {
+            Toast.makeText(requireContext(), getString(R.string.msg_loading), Toast.LENGTH_LONG).show()
             reloadCurrentFragment(requireActivity() as AppCompatActivity, this)
         }
 
         burger_menu.setOnClickListener {
             activity?.weather_drawer_layout?.openDrawer(GravityCompat.START)
-            Toast.makeText(requireContext(), getString(R.string.msg_loading), Toast.LENGTH_LONG).show()
         }
     }
 
