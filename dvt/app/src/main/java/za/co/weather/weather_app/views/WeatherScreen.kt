@@ -18,6 +18,7 @@ import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.model.ForecastTemperatureData
 import za.co.weather.weather_app.util.CustomLocationListener
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.readCurrent
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
 import za.co.weather.weather_app.util.Util.Companion.isMobileDataConnected
 import za.co.weather.weather_app.util.Util.Companion.isWiFiConnected
@@ -72,15 +73,24 @@ class WeatherScreen : Fragment() {
 
                 val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
 
-                current = pair.first
+//                current = pair.first
 //                current = read("")
 
-                forecast = pair.second
+//                current = readCurrent("")?.first
+//                forecast = readCurrent("")?.second
+
+//                forecast = pair.second
 
 //                if (current != null && forecast != null && current?.sys?.has("country")!!) {
-                if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
-                    updateScreen(activity as AppCompatActivity, current, forecast)
-                }
+//                if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
+//                    updateScreen(activity as AppCompatActivity, current, forecast)
+//                }
+
+            }
+
+            else {
+
+            Toast.makeText(requireContext(), getString(R.string.internet_not_stable), Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(requireContext(), getString(R.string.gps_not_enabled), Toast.LENGTH_LONG).show()
@@ -90,6 +100,11 @@ class WeatherScreen : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        current = readCurrent()?.first
+        forecast = readCurrent()?.second
+        if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
+            updateScreen(activity as AppCompatActivity, current, forecast)
+        }
         println("onResume")
     }
 

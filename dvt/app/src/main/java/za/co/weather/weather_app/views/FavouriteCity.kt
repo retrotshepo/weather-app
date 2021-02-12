@@ -8,25 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_weather_screen.*
 import kotlinx.coroutines.runBlocking
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.model.ForecastTemperatureData
-import za.co.weather.weather_app.util.LocalDBHandler.Companion.update
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.readCurrent
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
 import za.co.weather.weather_app.util.Util
 import za.co.weather.weather_app.util.Util.Companion.cityName
 import za.co.weather.weather_app.util.Util.Companion.makeApiCall
+import za.co.weather.weather_app.util.Util.Companion.updateScreen
 import java.util.*
-import kotlin.math.roundToInt
 
 class FavouriteCity : Fragment() {
 
@@ -53,8 +50,8 @@ class FavouriteCity : Fragment() {
         }
     }
 
-    override fun onResume() = runBlocking {
-        super.onResume()
+    override fun onStart() = runBlocking {
+        super.onStart()
 
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -66,18 +63,22 @@ class FavouriteCity : Fragment() {
             if (Util.isWiFiConnected(requireContext()) || Util.isMobileDataConnected(requireContext())) {
 
                 val pair = makeApiCall(requireActivity(), cityName)
-                current = pair.first
-                forecast = pair.second
 
-                if (current != null && forecast != null) {
-//                    updateScreen(current)
-                    Util.updateScreen(activity as AppCompatActivity, current, forecast)
-
-                }
             }
         } else {
             Toast.makeText(requireContext(), getString(R.string.gps_not_enabled), Toast.LENGTH_LONG)
                 .show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        current = readCurrent(cityName)?.first
+        forecast = readCurrent(cityName)?.second
+
+        if (current != null && forecast != null) {
+            updateScreen(activity as AppCompatActivity, current, forecast)
         }
     }
 }
