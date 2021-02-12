@@ -3,7 +3,7 @@ package za.co.weather.weather_app.model
 import org.json.JSONArray
 import org.json.JSONObject
 
-class DailyTemperatureData {
+class ForecastTemperatureData {
 
     var dt: String
     var main: JSONObject
