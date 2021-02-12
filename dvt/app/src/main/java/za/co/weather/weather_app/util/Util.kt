@@ -4,24 +4,32 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ComponentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.internal.LinkedTreeMap
+import kotlinx.android.synthetic.main.layout_weather_screen.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
-import za.co.weather.weather_app.model.DailyTemperatureData
+import za.co.weather.weather_app.model.ForecastTemperatureData
 import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint
+import za.co.weather.weather_app.views.ForecastAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
+
 
 class Util {
 
@@ -76,10 +84,10 @@ class Util {
         suspend fun makeApiCall(
             componentActivity: ComponentActivity,
             city: String
-        ): Pair<CurrentTemperatureData?, ArrayList<DailyTemperatureData>?> {
+        ): Pair<CurrentTemperatureData?, ArrayList<ForecastTemperatureData>?> {
 
             var current: CurrentTemperatureData? = null
-            var forecast = arrayListOf<DailyTemperatureData>()
+            var forecast = arrayListOf<ForecastTemperatureData>()
 
             when (isMobileDataConnected(componentActivity) || isWiFiConnected(componentActivity)) {
 
@@ -131,7 +139,7 @@ class Util {
                                             if (item.getString("dt_txt").contains("12:00")) {
 
                                                 val entry =
-                                                    DailyTemperatureData(
+                                                    ForecastTemperatureData(
                                                         "${item.getDouble("dt")}",
                                                         item.getJSONObject("main"),
                                                         item.getJSONArray("weather"),
@@ -170,10 +178,10 @@ class Util {
         suspend fun makeApiCall(componentActivity: ComponentActivity,
             lat: Double?,
             lon: Double?
-        ): Pair<CurrentTemperatureData?, ArrayList<DailyTemperatureData>?> {
+        ): Pair<CurrentTemperatureData?, ArrayList<ForecastTemperatureData>?> {
 
             var current: CurrentTemperatureData? = null
-            var forecast = arrayListOf<DailyTemperatureData>()
+            var forecast = arrayListOf<ForecastTemperatureData>()
 
             when (isMobileDataConnected(componentActivity) || isWiFiConnected(componentActivity)) {
 
@@ -225,7 +233,7 @@ class Util {
                                             if (item.getString("dt_txt").contains("12:00")) {
 
                                                 val entry =
-                                                    DailyTemperatureData(
+                                                    ForecastTemperatureData(
                                                         "${item.getDouble("dt")}",
                                                         item.getJSONObject("main"),
                                                         item.getJSONArray("weather"),
@@ -298,5 +306,91 @@ class Util {
             }
             return result
         }
+
+
+        fun updateScreen(context: AppCompatActivity, currentTemperatureData: CurrentTemperatureData?, forecast: ArrayList<ForecastTemperatureData>?) {
+
+            if (currentTemperatureData == null || context.temp_number_main == null) {
+                return
+            }
+
+            println(currentTemperatureData)
+            context.temp_number_main.text =
+                "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0"
+            context.temp_condition_main.text = currentTemperatureData.weather.getJSONObject(0)
+                .getString("main").toUpperCase(Locale.ENGLISH)
+
+            context.temp_min_text.text =
+                "${currentTemperatureData.main.getDouble("temp_min").roundToInt()}\u00B0\nmin"
+            context.temp_curr_text.text =
+                "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0\nCurrent"
+            context.temp_max_text.text =
+                "${currentTemperatureData.main.getDouble("temp_max").roundToInt()}\u00B0\nmax"
+
+            context.curr_location.text =
+                "${currentTemperatureData.name}, ${currentTemperatureData.sys.getString("country")}"
+            context.curr_humidity.text =
+                "Humidity\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
+            context.curr_pressure.text =
+                "Pressure\n${currentTemperatureData.main.getDouble("pressure").roundToInt()}hPa"
+
+            context.curr_feel.text =
+                "Feels like\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
+            context.curr_visibility.text = "Visibility\n${(currentTemperatureData.visibility / 1000)}km"
+
+            context.curr_last_updated.text = "Last updated\n${(convertLongToTime(System.currentTimeMillis()))}"
+
+
+            when (currentTemperatureData.weather.getJSONObject(0).getString("main")
+                .contains("cloud", true)) {
+
+                true -> {
+                    context.background_main.background =
+                        ActivityCompat.getDrawable(context, R.drawable.forest_cloudy)
+                    context.main_layout.background =
+                        ActivityCompat.getDrawable(context, R.drawable.main_background_cloud)
+                }
+                false -> {
+                    when (currentTemperatureData.weather.getJSONObject(0).getString("main")
+                        .contains("clear", true)) {
+
+                        true -> {
+                            context.background_main.background =
+                                ActivityCompat.getDrawable(context, R.drawable.forest_sunny)
+                            context.main_layout.background = ActivityCompat.getDrawable(
+                                context,
+                                R.drawable.main_background_clear
+                            )
+                        }
+                        false -> {
+                            when (currentTemperatureData.weather.getJSONObject(0).getString("main")
+                                .contains("rain", true)) {
+                                true -> {
+                                    context.background_main.background = ActivityCompat.getDrawable(
+                                        context,
+                                        R.drawable.forest_rainy
+                                    )
+                                    context.main_layout.background = ActivityCompat.getDrawable(
+                                        context,
+                                        R.drawable.main_background_rain
+                                    )
+                                }
+                                false -> {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            val forecastAdapter = ForecastAdapter(context, forecast)
+            context.recycler_view_daily_forecast.visibility = ViewGroup.VISIBLE
+            context.recycler_view_daily_forecast.adapter = forecastAdapter
+            val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            context.recycler_view_daily_forecast.layoutManager = layoutManager
+        }
+
+
+
     }
 }
