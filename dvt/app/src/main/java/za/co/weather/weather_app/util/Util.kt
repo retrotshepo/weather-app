@@ -24,6 +24,9 @@ import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.model.ForecastTemperatureData
 import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint
+import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint.Companion.getWeatherCurrentCALL
+import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint.Companion.getWeatherForecastCALL
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.createCurrent
 import za.co.weather.weather_app.views.ForecastAdapter
 import java.text.SimpleDateFormat
 import java.util.*
@@ -120,7 +123,8 @@ class Util {
                                                 jsonObject.getLong("timezone"),
                                                 "${jsonObject.getLong("id")}",
                                                 jsonObject.getString("name"),
-                                                "${jsonObject.getInt("cod")}"
+                                                "${jsonObject.getInt("cod")}",
+                                                System.currentTimeMillis()
                                             )
                                     }
                                 }
@@ -149,13 +153,17 @@ class Util {
                                                         item.getDouble("pop"),
                                                         if (item.has("rain")) item.getJSONObject("rain") else JSONObject(),
                                                         item.getJSONObject("sys"),
-                                                        item.getString("dt_txt")
+                                                        item.getString("dt_txt"),
+                                                        jsonObject.getJSONObject("city")
                                                     )
                                                 forecast.add(entry)
                                             }
                                         }
                                     }
                                 }
+
+                                createCurrent(current, forecast)
+
                             }
                         }
                         true -> {
@@ -172,6 +180,9 @@ class Util {
             }
 
             delay(2000)
+
+
+
             return Pair(current, forecast)
         }
 
@@ -191,9 +202,8 @@ class Util {
                         true -> {
                             componentActivity.lifecycleScope.launch(Dispatchers.IO) {
 
-                                val resCurrent = WeatherAPIEndpoint.getWeatherCurrentCALL(lat, lon)
-                                val resForecast =
-                                    WeatherAPIEndpoint.getWeatherForecastCALL(lat, lon)
+                                val resCurrent = getWeatherCurrentCALL(lat, lon)
+                                val resForecast = getWeatherForecastCALL(lat, lon)
 
                                 if (resCurrent != null) {
 
@@ -214,7 +224,8 @@ class Util {
                                                 jsonObject.getLong("timezone"),
                                                 "${jsonObject.getLong("id")}",
                                                 jsonObject.getString("name"),
-                                                "${jsonObject.getInt("cod")}"
+                                                "${jsonObject.getInt("cod")}",
+                                                System.currentTimeMillis()
                                             )
                                     }
                                 }
@@ -243,13 +254,18 @@ class Util {
                                                         item.getDouble("pop"),
                                                         if (item.has("rain")) item.getJSONObject("rain") else JSONObject(),
                                                         item.getJSONObject("sys"),
-                                                        item.getString("dt_txt")
+                                                        item.getString("dt_txt"),
+                                                        jsonObject.getJSONObject("city")
                                                     )
                                                 forecast.add(entry)
                                             }
                                         }
                                     }
                                 }
+
+
+                                createCurrent(current, forecast)
+
                             }
                         }
                         false -> {
@@ -264,6 +280,12 @@ class Util {
                     ).show()
                 }
             }
+
+
+
+
+
+
             delay(2000)
             return Pair(current, forecast)
         }
@@ -277,17 +299,32 @@ class Util {
         }
 
 
+//        private fun getDayString(day: Int): String? {
+//            when (day) {
+//                1 -> { return "Monday" }
+//                2 -> { return "Tuesday" }
+//                3 -> { return "Wednesday" }
+//                4 -> { return "Thursday" }
+//                5 -> { return "Friday" }
+//                6 -> { return "Saturday" }
+//                7 -> { return "Sunday" }
+//            }
+//            return ""
+//        }
+
         private fun getDayString(day: Int): String? {
-            when (day) {
-                1 -> { return "Monday" }
-                2 -> { return "Tuesday" }
-                3 -> { return "Wednesday" }
-                4 -> { return "Thursday" }
-                5 -> { return "Friday" }
-                6 -> { return "Saturday" }
-                7 -> { return "Sunday" }
+            var result = ""
+            result = when (day) {
+                1 -> { "Monday" }
+                2 -> { "Tuesday" }
+                3 -> { "Wednesday" }
+                4 -> { "Thursday" }
+                5 -> { "Friday" }
+                6 -> { "Saturday" }
+                7 -> { "Sunday" }
+                else -> {""}
             }
-            return ""
+            return result
         }
 
         private fun convertLongToTime(time: Long?): String {
@@ -306,7 +343,6 @@ class Util {
             }
             return result
         }
-
 
         fun updateScreen(context: AppCompatActivity, currentTemperatureData: CurrentTemperatureData?, forecast: ArrayList<ForecastTemperatureData>?) {
 
@@ -338,7 +374,7 @@ class Util {
                 "Feels like\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
             context.curr_visibility.text = "Visibility\n${(currentTemperatureData.visibility / 1000)}km"
 
-            context.curr_last_updated.text = "Last updated\n${(convertLongToTime(System.currentTimeMillis()))}"
+            context.curr_last_updated.text = "Last updated\n${(convertLongToTime(currentTemperatureData.lastUpdated))}"
 
 
             when (currentTemperatureData.weather.getJSONObject(0).getString("main")
@@ -389,8 +425,6 @@ class Util {
             val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             context.recycler_view_daily_forecast.layoutManager = layoutManager
         }
-
-
 
     }
 }
