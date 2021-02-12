@@ -19,12 +19,17 @@ import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.model.DailyTemperatureData
 import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Util {
 
     companion object {
 
         var cityName = ""
+        private val todayFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+        private val lastUpdatedFormat = SimpleDateFormat("MMMM, dd yyyy HH:mm:ss", Locale.ENGLISH)
 
         fun isWiFiConnected(context: Context): Boolean {
             var connected = false
@@ -162,8 +167,7 @@ class Util {
             return Pair(current, forecast)
         }
 
-        suspend fun makeApiCall(
-            componentActivity: ComponentActivity,
+        suspend fun makeApiCall(componentActivity: ComponentActivity,
             lat: Double?,
             lon: Double?
         ): Pair<CurrentTemperatureData?, ArrayList<DailyTemperatureData>?> {
@@ -254,6 +258,45 @@ class Util {
             }
             delay(2000)
             return Pair(current, forecast)
+        }
+
+        fun convertDateToDay(date: String): String? {
+
+            val calendar = Calendar.getInstance()
+            calendar.time = todayFormat.parse(date)
+
+            return getDayString(calendar.get(Calendar.DAY_OF_WEEK))
+        }
+
+
+        private fun getDayString(day: Int): String? {
+            when (day) {
+                1 -> { return "Monday" }
+                2 -> { return "Tuesday" }
+                3 -> { return "Wednesday" }
+                4 -> { return "Thursday" }
+                5 -> { return "Friday" }
+                6 -> { return "Saturday" }
+                7 -> { return "Sunday" }
+            }
+            return ""
+        }
+
+        fun convertLongToTime(time: Long?): String {
+            var result = ""
+            if (time != null) {
+               result = when (time > 0) {
+                    true -> {
+                        val date = Date(time)
+                        lastUpdatedFormat.format(date)
+                    }
+                    else -> {
+                        val date = Date(System.currentTimeMillis())
+                        lastUpdatedFormat.format(date)
+                    }
+                }
+            }
+            return result
         }
     }
 }

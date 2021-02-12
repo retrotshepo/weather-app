@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.DailyTemperatureData
+import za.co.weather.weather_app.util.Util.Companion.convertDateToDay
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
@@ -72,29 +73,29 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
             }
         }
     }
-
-    private fun convertDateToDay(date: String): String? {
-
-        val calendar = Calendar.getInstance()
-        val todayFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        calendar.time = todayFormat.parse(date)
-
-        return getDayString(calendar.get(Calendar.DAY_OF_WEEK))
-    }
-
-
-    private fun getDayString(day: Int): String? {
-        when (day) {
-            1 -> { return "Monday" }
-            2 -> { return "Tuesday" }
-            3 -> { return "Wednesday" }
-            4 -> { return "Thursday" }
-            5 -> { return "Friday" }
-            6 -> { return "Saturday" }
-            7 -> { return "Sunday" }
-        }
-        return ""
-    }
+//
+//    private fun convertDateToDay(date: String): String? {
+//
+//        val calendar = Calendar.getInstance()
+//        val todayFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+//        calendar.time = todayFormat.parse(date)
+//
+//        return getDayString(calendar.get(Calendar.DAY_OF_WEEK))
+//    }
+//
+//
+//    private fun getDayString(day: Int): String? {
+//        when (day) {
+//            1 -> { return "Monday" }
+//            2 -> { return "Tuesday" }
+//            3 -> { return "Wednesday" }
+//            4 -> { return "Thursday" }
+//            5 -> { return "Friday" }
+//            6 -> { return "Saturday" }
+//            7 -> { return "Sunday" }
+//        }
+//        return ""
+//    }
 
     class ViewHolder : RecyclerView.ViewHolder {
         var dailyTempDay: WeakReference<TextView>
