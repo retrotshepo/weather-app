@@ -101,6 +101,59 @@ class LocalDBHandler {
             return array
         }
 
+        fun read(city: String): CurrentTemperatureData? {
+
+            var temp: CurrentTemperatureData? = null
+            var realm: Realm? = null
+
+            try {
+
+                realm = Realm.getDefaultInstance()
+
+                var reCity: FavouriteObject? = null
+                reCity = when (city.isBlank()) {
+
+                    true -> {
+                        realm.where(FavouriteObject::class.java)
+                            .findFirst()
+                    }
+                    false -> {
+                        realm.where(FavouriteObject::class.java)
+                            .equalTo("name", city)
+                            .findFirst()
+                    }
+                }
+
+                if (reCity != null) {
+
+                    val nCurrentTemperatureData =
+                        CurrentTemperatureData(
+                            JSONObject(reCity.coordinates),
+                            JSONArray(reCity.weather),
+                            "",
+                            JSONObject(reCity.main),
+                            0.0,
+                            JSONObject(),
+                            JSONObject(),
+                            "",
+                            JSONObject(reCity.sys),
+                            0L,
+                            "",
+                            reCity.name,
+                            "", reCity.lastUpdated
+                        )
+
+                    temp = nCurrentTemperatureData
+                }
+
+            } catch (e: Exception) {
+                println(e.message)
+            } finally {
+                closeRealmInstance(realm)
+            }
+            return temp
+        }
+
         fun update(city: String, current: CurrentTemperatureData?) {
 
             if (city.isNullOrBlank() || current == null) {
