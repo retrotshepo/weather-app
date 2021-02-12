@@ -16,6 +16,7 @@ open class FavouriteObject : RealmObject() {
     var weather: String = ""
     var main: String = ""
     var sys: String = ""
+    var visibility: Double = 0.0
     var lastUpdated: Long = 0L
 
 }
