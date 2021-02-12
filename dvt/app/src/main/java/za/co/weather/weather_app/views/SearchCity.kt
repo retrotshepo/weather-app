@@ -17,7 +17,7 @@ import retrofit2.HttpException
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint.Companion.getWeatherCityCALL
-import za.co.weather.weather_app.util.LocalDBHandler.Companion.create
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.createCurrent
 import za.co.weather.weather_app.util.Util.Companion.isMobileDataConnected
 import za.co.weather.weather_app.util.Util.Companion.isWiFiConnected
 import za.co.weather.weather_app.util.Util.Companion.serializeToJSONObject
@@ -121,7 +121,7 @@ class SearchCity : Fragment() {
                     getString(R.string.search_saved_new_city),
                     Toast.LENGTH_LONG
                 ).show()
-                create(current)
+                createCurrent(current, arrayListOf())
                 activity?.onBackPressed()
             }
         }

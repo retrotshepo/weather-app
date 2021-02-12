@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.content_favourites.*
 import kotlinx.android.synthetic.main.layout_favourites.*
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
-import za.co.weather.weather_app.util.LocalDBHandler.Companion.delete
-import za.co.weather.weather_app.util.LocalDBHandler.Companion.read
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.deleteCurrent
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.readFavourites
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.cityScreen
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.searchScreen
@@ -36,7 +36,13 @@ class Favourites : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val favourites = read()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+
+        val favourites = readFavourites()
         val forecastAdapter = FavouritesAdapter(
             requireContext(),
             favourites,
@@ -61,7 +67,6 @@ class Favourites : Fragment() {
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view_favourites.layoutManager = layoutManager
     }
-
     override fun onResume() {
         super.onResume()
         fav_floating_button.setOnClickListener {
@@ -95,7 +100,7 @@ class Favourites : Fragment() {
                     })
                 setNegativeButton("Remove",
                     DialogInterface.OnClickListener { dialog, id ->
-                        delete(city, country)
+                        deleteCurrent(city, country)
                         reloadCurrentFragment(it, this@Favourites)
                     })
                 setNeutralButton("Cancel",
