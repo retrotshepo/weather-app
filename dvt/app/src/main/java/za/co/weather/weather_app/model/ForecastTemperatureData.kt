@@ -17,10 +17,11 @@ class ForecastTemperatureData {
     var sys: JSONObject
 
     var date: String
+    var city: JSONObject
 
     constructor(dt: String, main: JSONObject, weather: JSONArray, clouds: JSONObject,
         wind: JSONObject, visibility: Double, pop: Double, rain: JSONObject,
-        sys: JSONObject, date: String
+        sys: JSONObject, date: String, city: JSONObject
     ) {
         this.dt = dt
         this.main = main
@@ -32,5 +33,6 @@ class ForecastTemperatureData {
         this.rain = rain
         this.sys = sys
         this.date = date
+        this.city = city
     }
 }
