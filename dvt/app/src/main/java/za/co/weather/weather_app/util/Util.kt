@@ -290,7 +290,7 @@ class Util {
             return ""
         }
 
-        fun convertLongToTime(time: Long?): String {
+        private fun convertLongToTime(time: Long?): String {
             var result = ""
             if (time != null) {
                result = when (time > 0) {

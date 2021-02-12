@@ -91,7 +91,6 @@ class WeatherScreen : Fragment() {
         super.onResume()
 
         println("onResume")
-
     }
 
     override fun onPause() {
@@ -103,91 +102,4 @@ class WeatherScreen : Fragment() {
         println("onStop")
         gps?.stopGPS()
     }
-
-
-
-//    private fun updateScreen(currentTemperatureData: CurrentTemperatureData?) {
-//
-//        if (currentTemperatureData == null || temp_number_main == null) {
-//            return
-//        }
-//
-//        update(currentTemperatureData)
-//
-//        temp_number_main.text =
-//            "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0"
-//        temp_condition_main.text = currentTemperatureData.weather.getJSONObject(0)
-//            .getString("main").toUpperCase(Locale.ENGLISH)
-//
-//        temp_min_text.text =
-//            "${currentTemperatureData.main.getDouble("temp_min").roundToInt()}\u00B0\nmin"
-//        temp_curr_text.text =
-//            "${currentTemperatureData.main.getDouble("temp").roundToInt()}\u00B0\nCurrent"
-//        temp_max_text.text =
-//            "${currentTemperatureData.main.getDouble("temp_max").roundToInt()}\u00B0\nmax"
-//
-//        curr_location.text =
-//            "${currentTemperatureData.name}, ${currentTemperatureData.sys.getString("country")}"
-//        curr_humidity.text =
-//            "HUMIDITY\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
-//        curr_pressure.text =
-//            "PRESSURE\n${currentTemperatureData.main.getDouble("pressure").roundToInt()}hPa"
-//
-//        curr_feel.text =
-//            "FEELS LIKE\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
-//        curr_visibility.text = "VISIBILITY\n${(currentTemperatureData.visibility / 1000)}km"
-//
-//        when (currentTemperatureData.weather.getJSONObject(0).getString("main")
-//            .contains("cloud", true)) {
-//
-//            true -> {
-//                background_main.background =
-//                    ActivityCompat.getDrawable(requireContext(), R.drawable.forest_cloudy)
-//                main_layout.background =
-//                    ActivityCompat.getDrawable(requireContext(), R.drawable.main_background_cloud)
-//            }
-//            false -> {
-//                when (currentTemperatureData.weather.getJSONObject(0).getString("main")
-//                    .contains("clear", true)) {
-//
-//                    true -> {
-//                        background_main.background =
-//                            ActivityCompat.getDrawable(requireContext(), R.drawable.forest_sunny)
-//                        main_layout.background = ActivityCompat.getDrawable(
-//                            requireContext(),
-//                            R.drawable.main_background_clear
-//                        )
-//                    }
-//                    false -> {
-//                        when (currentTemperatureData.weather.getJSONObject(0).getString("main")
-//                            .contains("rain", true)) {
-//                            true -> {
-//                                background_main.background = ActivityCompat.getDrawable(
-//                                    requireContext(),
-//                                    R.drawable.forest_rainy
-//                                )
-//                                main_layout.background = ActivityCompat.getDrawable(
-//                                    requireContext(),
-//                                    R.drawable.main_background_rain
-//                                )
-//                            }
-//                            false -> {
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        /**
-//         * setting up adapter.
-//         */
-//        val forecastAdapter = ForecastAdapter(requireContext(), forecast)
-//        recycler_view_daily_forecast.visibility = ViewGroup.VISIBLE
-//        recycler_view_daily_forecast.adapter = forecastAdapter
-//        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-//        recycler_view_daily_forecast.layoutManager = layoutManager
-//
-//    }
-
 }

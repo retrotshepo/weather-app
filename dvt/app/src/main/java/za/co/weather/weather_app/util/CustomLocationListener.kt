@@ -28,6 +28,7 @@ class CustomLocationListener : LocationListener{
             currentLocation = p0
             latitude = p0.latitude
             longitude = p0.longitude
+        println("onLocationChanged lat:$latitude \tlon:$longitude")
         }
     }
 
@@ -92,6 +93,7 @@ class CustomLocationListener : LocationListener{
     }
 
     fun stopGPS() {
+        println("location manager stopped")
         if (locationManager != null) {
             locationManager?.removeUpdates(this)
         }
