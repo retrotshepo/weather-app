@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         initialize("dvt-weather.db", applicationContext)
         grantMultiplePermissions()
-
     }
 
     override fun onResume() {

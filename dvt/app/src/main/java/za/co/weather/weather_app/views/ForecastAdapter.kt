@@ -8,21 +8,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
-import za.co.weather.weather_app.model.DailyTemperatureData
+import za.co.weather.weather_app.model.ForecastTemperatureData
 import za.co.weather.weather_app.util.Util.Companion.convertDateToDay
 import java.lang.ref.WeakReference
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
 class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
 
     private var context: Context
-    private var items: ArrayList<DailyTemperatureData>
+    private var items: ArrayList<ForecastTemperatureData>
 
     constructor(
         context: Context,
-        items: ArrayList<DailyTemperatureData>?
+        items: ArrayList<ForecastTemperatureData>?
     ) : super() {
         this.context = context
         this.items = arrayListOf()
