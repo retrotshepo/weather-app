@@ -8,8 +8,6 @@
     android:background="@drawable/main_background_cloud">
 
 
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,7 +23,6 @@
             android:paddingBottom="@dimen/margin_medium">
 
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/background_main"
                 android:layout_width="0dp"
@@ -37,29 +34,29 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
                     android:id="@+id/burger_menu"
-                    android:src="@drawable/ic_baseline_menu_white_24"
+                    android:layout_width="wrap_content"
 
+                    android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_sml_med"
-                    app:layout_constraintTop_toTopOf="parent"
+
+                    android:src="@drawable/ic_baseline_menu_white_24"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
 
 
                     />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
                     android:id="@+id/btn_refresh"
-                    android:src="@drawable/ic_baseline_refresh_white_24"
+                    android:layout_width="wrap_content"
 
+                    android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_sml_med"
-                    app:layout_constraintTop_toTopOf="parent"
+
+                    android:src="@drawable/ic_baseline_refresh_white_24"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
 
                     />
 
@@ -149,6 +146,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="24\ncurrent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
@@ -217,6 +215,22 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recycler_view_daily_forecast" />
+
+
+            <TextView
+                android:id="@+id/curr_last_updated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textStyle="italic"
+                android:gravity="center"
+                tools:text="@string/weather_screen_last_updated"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_xsmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/curr_feel" />
+
 
             <ImageView
                 android:id="@+id/curr_location_icon"
