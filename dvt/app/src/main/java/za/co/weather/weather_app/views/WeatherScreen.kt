@@ -23,6 +23,7 @@ import za.co.weather.weather_app.model.DailyTemperatureData
 import za.co.weather.weather_app.util.CustomLocationListener
 import za.co.weather.weather_app.util.NavigationRoutes
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
+import za.co.weather.weather_app.util.Util.Companion.convertLongToTime
 import za.co.weather.weather_app.util.Util.Companion.isMobileDataConnected
 import za.co.weather.weather_app.util.Util.Companion.isWiFiConnected
 import za.co.weather.weather_app.util.Util.Companion.makeApiCall
@@ -71,8 +72,13 @@ class WeatherScreen : Fragment() {
             if (isWiFiConnected(requireContext()) || isMobileDataConnected(requireContext())) {
 
                 val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
+
+
                 current = pair.first
+//                current = read("")
+
                 forecast = pair.second
+
 //                if (current != null && forecast != null && current?.sys?.has("country")!!) {
                 if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
                     updateScreen(current)
@@ -110,13 +116,15 @@ class WeatherScreen : Fragment() {
         curr_location.text =
             "${currentTemperatureData.name}, ${currentTemperatureData.sys.getString("country")}"
         curr_humidity.text =
-            "HUMIDITY\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
+            "Humidity\n${currentTemperatureData.main.getDouble("humidity").roundToInt()}%"
         curr_pressure.text =
-            "PRESSURE\n${currentTemperatureData.main.getDouble("pressure").roundToInt()}hPa"
+            "Pressure\n${currentTemperatureData.main.getDouble("pressure").roundToInt()}hPa"
 
         curr_feel.text =
-            "FEELS LIKE\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
-        curr_visibility.text = "VISIBILITY\n${(currentTemperatureData.visibility / 1000)}km"
+            "Feels like\n${currentTemperatureData.main.getDouble("feels_like").roundToInt()}\u00B0"
+        curr_visibility.text = "Visibility\n${(currentTemperatureData.visibility / 1000)}km"
+
+        curr_last_updated.text = "Last updated\n${(convertLongToTime(System.currentTimeMillis()))}"
 
 
         when (currentTemperatureData.weather.getJSONObject(0).getString("main")
