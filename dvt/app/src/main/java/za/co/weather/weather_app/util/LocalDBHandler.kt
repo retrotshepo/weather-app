@@ -48,6 +48,8 @@ class LocalDBHandler {
                         newFav.main = current.main.toString()
                         newFav.sys = current.sys.toString()
                     }
+                } else {
+                    update(current)
                 }
 
             } catch (e: Exception) {
@@ -154,6 +156,40 @@ class LocalDBHandler {
             return temp
         }
 
+        fun update(current: CurrentTemperatureData?) {
+
+            if (current == null) {
+                return
+            }
+
+            var realm: Realm? = null
+            try {
+
+                realm = Realm.getDefaultInstance()
+
+                val reFaves = realm.where(FavouriteObject::class.java)
+                    .equalTo("name", current.name)
+                    .findFirst()
+
+                if (reFaves != null) {
+                    realm.executeTransaction {
+                        reFaves.name = current.name
+                        reFaves.coordinates = current.coordinates.toString()
+                        reFaves.main = current.main.toString()
+                        reFaves.weather = current.weather.toString()
+                        reFaves.sys = current.sys.toString()
+                        reFaves.lastUpdated = current.lastUpdated
+                    }
+                }
+
+            } catch (e: Exception) {
+                println(e.message)
+            } finally {
+                closeRealmInstance(realm)
+            }
+        }
+
+
         fun update(city: String, current: CurrentTemperatureData?) {
 
             if (city.isNullOrBlank() || current == null) {
@@ -185,6 +221,8 @@ class LocalDBHandler {
                 closeRealmInstance(realm)
             }
         }
+
+
 
         fun delete(city: String, country: String) {
 
