@@ -22,6 +22,7 @@ class CurrentTemperatureData {
     var id: String
     var name: String
     var code: String
+    var lastUpdated: Long
 
 
     constructor(
@@ -37,7 +38,8 @@ class CurrentTemperatureData {
         timeZone: Long,
         id: String,
         name: String,
-        code: String
+        code: String,
+        lastUpdated: Long = 0L
     ) {
         this.coordinates = coordinates
         this.weather = weather
@@ -52,5 +54,6 @@ class CurrentTemperatureData {
         this.id = id
         this.name = name
         this.code = code
+        this.lastUpdated = lastUpdated
     }
 }
