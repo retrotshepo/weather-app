@@ -99,9 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
-        val id = item.itemId
-
-        when(id) {
+        when(item.itemId) {
             R.id.action_home -> {
                 homeScreen(this)
             }
