@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.content_favourites.*
 import kotlinx.android.synthetic.main.layout_favourites.*
 import za.co.weather.weather_app.R
@@ -29,13 +30,14 @@ class Favourites : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.main_toolbar?.visibility = ViewGroup.VISIBLE
 
         return inflater.inflate(R.layout.layout_favourites, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        activity?.title = getString(R.string.screen_favourites)
     }
 
     override fun onStart() {

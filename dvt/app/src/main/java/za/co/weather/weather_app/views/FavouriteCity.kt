@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.layout_weather_screen.*
 import kotlinx.coroutines.runBlocking
 import za.co.weather.weather_app.R
@@ -40,6 +41,8 @@ class FavouriteCity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        activity?.main_toolbar?.visibility = ViewGroup.GONE
 
         btn_refresh.setOnClickListener {
             reloadCurrentFragment(requireActivity() as AppCompatActivity, this)

@@ -3,6 +3,7 @@ package za.co.weather.weather_app.views
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.layout_weather_screen.*
 import kotlinx.coroutines.runBlocking
 import za.co.weather.weather_app.R
@@ -48,6 +50,7 @@ class WeatherScreen : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("onViewCreated")
+        activity?.main_toolbar?.visibility = ViewGroup.GONE
 
         btn_refresh.setOnClickListener {
             reloadCurrentFragment(requireActivity() as AppCompatActivity, this)
@@ -73,7 +76,26 @@ class WeatherScreen : Fragment() {
             if (isWiFiConnected(requireContext()) || isMobileDataConnected(requireContext())) {
 
 //                val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
-                val pair = makeApiCall(requireActivity(), getValue(LATITUDE)?.toDouble(),getValue(LONGITUDE)?.toDouble())
+                val lat = getValue(LATITUDE)
+                val lon = getValue(LONGITUDE)
+
+
+                val lat1 = gps?.getLatitude()
+                val lon1 = gps?.getLongitude()
+
+
+                when (lat?.equals(0.0F)!! || lon?.equals(0.0F)!!) {
+                    true -> {
+                        val pair = makeApiCall(requireActivity(), lat1, lon1)
+
+                    }
+
+                    false -> {
+
+                        val pair = makeApiCall(requireActivity(), lat?.toDouble(), lon?.toDouble())
+                    }
+                }
+
 
 //                current = pair.first
 //                current = read("")
@@ -101,13 +123,20 @@ class WeatherScreen : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        Handler().postDelayed({
 
-        current = readCurrent()?.first
-        forecast = readCurrent()?.second
-        if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
-            updateScreen(activity as AppCompatActivity, current, forecast)
-        }
-        println("onResume")
+            current = readCurrent()?.first
+            forecast = readCurrent()?.second
+
+            if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
+                updateScreen(activity as AppCompatActivity, current, forecast)
+            }
+
+        println("onResume here")
+
+        }, 3000)
+
+
     }
 
     override fun onPause() {

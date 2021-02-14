@@ -20,5 +20,6 @@
     <string name="weather_screen_last_updated">YYYY-MM-DD HH:mm:ss</string>
 
     <string name="weather_shared_prefs">WeatherSharedPreferences</string>
+    <string name="screen_favourites">Saved locations</string>
 
 </resources>

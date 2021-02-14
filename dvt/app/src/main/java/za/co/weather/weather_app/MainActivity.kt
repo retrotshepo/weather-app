@@ -9,11 +9,13 @@ import android.os.Handler
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.initialize
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.favouritesScreen
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.homeScreen
@@ -28,14 +30,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Manifest.permission.ACCESS_FINE_LOCATION,   Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE
     )
+    var toggle: ActionBarDrawerToggle? = null
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(main_toolbar)
 
         initialize("dvt-weather.db", applicationContext)
         grantMultiplePermissions()
+
+
+        toggle = ActionBarDrawerToggle(
+            this, weather_drawer_layout, main_toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+
+
+        weather_drawer_layout.addDrawerListener(toggle!!)
+        toggle?.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_white_24)
+        toggle?.syncState()
     }
 
     override fun onResume() {
