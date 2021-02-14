@@ -2,17 +2,15 @@ package za.co.weather.weather_app.views
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.content_favourites.*
 import kotlinx.android.synthetic.main.layout_favourites.*
+import kotlinx.android.synthetic.main.content_main.*
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.deleteCurrent
@@ -37,7 +35,10 @@ class Favourites : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         activity?.title = getString(R.string.screen_favourites)
+        setHasOptionsMenu(true)
+
     }
 
     override fun onStart() {
@@ -69,6 +70,7 @@ class Favourites : Fragment() {
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view_favourites.layoutManager = layoutManager
     }
+
     override fun onResume() {
         super.onResume()
         fav_floating_button.setOnClickListener {
@@ -118,4 +120,20 @@ class Favourites : Fragment() {
         alertDialog?.setCancelable(false)
         alertDialog?.show()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        activity!!.menuInflater.inflate(R.menu.menu_favourites_overflow, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.action_view_locations) {
+            println("hello world")
+        }
+
+        return super.onOptionsItemSelected(item)
+
+    }
+
 }
