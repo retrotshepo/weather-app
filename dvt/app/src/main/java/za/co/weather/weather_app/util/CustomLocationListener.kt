@@ -8,10 +8,14 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import za.co.weather.weather_app.util.SharedPreferencesHandler.Companion.LATITUDE
+import za.co.weather.weather_app.util.SharedPreferencesHandler.Companion.LONGITUDE
+import za.co.weather.weather_app.util.SharedPreferencesHandler.Companion.saveValue
 import za.co.weather.weather_app.util.Util.Companion.isMobileDataConnected
 import za.co.weather.weather_app.util.Util.Companion.isWiFiConnected
 
-class CustomLocationListener : LocationListener{
+class CustomLocationListener(var context: Context) : LocationListener {
+
     private var currentLocation : Location? = null
     private var latitude: Double? = 0.0
     private var longitude: Double? = 0.0
@@ -22,6 +26,12 @@ class CustomLocationListener : LocationListener{
 
     private var locationManager: LocationManager? = null
 
+    init {
+        getLastKnownLocationGPS(this.context)
+        getLastKnownLocationNetwork(this.context)
+    }
+
+
     override fun onLocationChanged(p0: Location?) {
 
         if (p0 != null) {
@@ -29,6 +39,14 @@ class CustomLocationListener : LocationListener{
             latitude = p0.latitude
             longitude = p0.longitude
         println("onLocationChanged lat:$latitude \tlon:$longitude")
+
+            when (latitude != 0.0 && longitude != 0.0) {
+                true -> {
+                    saveValue(LATITUDE, latitude?.toFloat())
+                    saveValue(LONGITUDE, longitude?.toFloat())
+                }
+            }
+
         }
     }
 
@@ -46,7 +64,7 @@ class CustomLocationListener : LocationListener{
         return longitude
     }
 
-    fun getLastKnownLocationNetwork(context: Context) {
+    private fun getLastKnownLocationNetwork(context: Context) {
 
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isInternetAvailable = isMobileDataConnected(context) || isWiFiConnected(context)
@@ -69,7 +87,7 @@ class CustomLocationListener : LocationListener{
         }
     }
 
-    fun getLastKnownLocationGPS(context: Context) {
+    private fun getLastKnownLocationGPS(context: Context) {
 
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGPSAvailable = if(locationManager != null) locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) else false
