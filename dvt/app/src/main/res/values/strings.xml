@@ -22,4 +22,8 @@
     <string name="weather_shared_prefs">WeatherSharedPreferences</string>
     <string name="screen_favourites">Saved locations</string>
 
+    <string name="action_view_locations">View locations on map</string>
+    <string name="action_saved_locations">Saved locations</string>
+    <string name="action_home">Home</string>
+
 </resources>

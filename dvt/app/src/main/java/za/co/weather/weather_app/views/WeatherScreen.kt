@@ -148,4 +148,7 @@ class WeatherScreen : Fragment() {
         println("onStop")
         gps?.stopGPS()
     }
+
+
+
 }
