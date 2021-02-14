@@ -20,6 +20,9 @@ import za.co.weather.weather_app.model.ForecastTemperatureData
 import za.co.weather.weather_app.util.CustomLocationListener
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.readCurrent
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
+import za.co.weather.weather_app.util.SharedPreferencesHandler.Companion.LATITUDE
+import za.co.weather.weather_app.util.SharedPreferencesHandler.Companion.LONGITUDE
+import za.co.weather.weather_app.util.SharedPreferencesHandler.Companion.getValue
 import za.co.weather.weather_app.util.Util.Companion.isMobileDataConnected
 import za.co.weather.weather_app.util.Util.Companion.isWiFiConnected
 import za.co.weather.weather_app.util.Util.Companion.makeApiCall
@@ -37,9 +40,7 @@ class WeatherScreen : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        gps = CustomLocationListener()
-//        gps?.getLastKnownLocationGPS(requireContext())
-//        gps?.getLastKnownLocationNetwork(requireContext())
+        gps = CustomLocationListener(requireContext())
         println("onCreateView")
         return inflater.inflate(R.layout.layout_weather_screen, container, false)
     }
@@ -60,8 +61,8 @@ class WeatherScreen : Fragment() {
     override fun onStart() = runBlocking {
         super.onStart()
         println("onStart")
-        gps?.getLastKnownLocationGPS(requireContext())
-        gps?.getLastKnownLocationNetwork(requireContext())
+//        gps?.getLastKnownLocationGPS(requireContext())
+//        gps?.getLastKnownLocationNetwork(requireContext())
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -71,7 +72,8 @@ class WeatherScreen : Fragment() {
 
             if (isWiFiConnected(requireContext()) || isMobileDataConnected(requireContext())) {
 
-                val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
+//                val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
+                val pair = makeApiCall(requireActivity(), getValue(LATITUDE)?.toDouble(),getValue(LONGITUDE)?.toDouble())
 
 //                current = pair.first
 //                current = read("")
