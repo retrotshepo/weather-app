@@ -18,5 +18,6 @@ open class FavouriteObject : RealmObject() {
     var sys: String = ""
     var visibility: Double = 0.0
     var lastUpdated: Long = 0L
+    var distinction: String = ""
 
 }

@@ -26,7 +26,7 @@ class LocalDBHandler {
             return Realm.getInstance(config)
         }
 
-        fun createCurrent(current: CurrentTemperatureData?, forecast: ArrayList<ForecastTemperatureData>?) {
+        fun createCurrent(current: CurrentTemperatureData?, forecast: ArrayList<ForecastTemperatureData>?, dist: String) {
 
             if (current == null) {
                 return
@@ -51,6 +51,7 @@ class LocalDBHandler {
                         newFav.sys = current.sys.toString()
                         newFav.visibility = current.visibility
                         newFav.lastUpdated = current.lastUpdated
+                        newFav.distinction = dist
                     }
                 } else {
                     deleteForecast(current.name)
@@ -79,6 +80,7 @@ class LocalDBHandler {
 
                     true -> {
                         realm.where(FavouriteObject::class.java)
+                            .equalTo("distinction", "0")
                             .findFirst()
                     }
                     false -> {
@@ -196,6 +198,7 @@ class LocalDBHandler {
                 realm = Realm.getDefaultInstance()
 
                 val reCities = realm.where(FavouriteObject::class.java)
+                    .equalTo("distinction", "1")
                     .findAll()
 
                 if (reCities.isLoaded) {
@@ -230,10 +233,6 @@ class LocalDBHandler {
             return array
         }
 
-
-
-
-
         private fun createForecast(forecast: ArrayList<ForecastTemperatureData>?) {
 
             if (forecast.isNullOrEmpty()) {
@@ -250,7 +249,6 @@ class LocalDBHandler {
 
                 if (reFave.isLoaded && reFave.isEmpty()) {
 
-//                    deleteForecast(forecast[0].city.getString("name"))
 
                     realm.executeTransaction { rlm ->
 
@@ -265,7 +263,7 @@ class LocalDBHandler {
                             newForecast.main = d.main.toString()
 
                             newForecast.weather = d.weather.toString()
-//                            Thread.sleep(100)
+                            Thread.sleep(1)
                         }
                     }
                 }

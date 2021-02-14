@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.initialize
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.favouritesScreen
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.homeScreen
+import za.co.weather.weather_app.util.SharedPreferencesHandler.Companion.initPref
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
+        initPref(applicationContext)
         if (supportFragmentManager.backStackEntryCount < 1) {
             homeScreen(this)
         }
