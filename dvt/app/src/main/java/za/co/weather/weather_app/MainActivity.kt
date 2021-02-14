@@ -27,11 +27,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var doubleBackToExitPressedOnce = false
     private val permissionsRequestCode = 10
     private val sensitivePermissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,   Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.INTERNET,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_NETWORK_STATE
     )
-    var toggle: ActionBarDrawerToggle? = null
 
+    var toggle: ActionBarDrawerToggle? = null
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
