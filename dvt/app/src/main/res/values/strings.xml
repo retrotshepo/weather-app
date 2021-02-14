@@ -16,6 +16,9 @@
 
     <string name="msg_loading">Loading, please wait.</string>
     <string name="gps_not_enabled">Please grant GPS permission.</string>
-    <string name="internet_not_stable">No stable internet connection to update.</string>
+    <string name="internet_not_stable">Your device is not connected to a stable internet connection.</string>
     <string name="weather_screen_last_updated">YYYY-MM-DD HH:mm:ss</string>
+
+    <string name="weather_shared_prefs">WeatherSharedPreferences</string>
+
 </resources>

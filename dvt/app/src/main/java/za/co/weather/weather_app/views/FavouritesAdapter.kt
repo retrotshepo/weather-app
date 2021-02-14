@@ -44,7 +44,7 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder> {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.favouriteCity.get()?.text = "${item.name}"
+        holder.favouriteCity.get()?.text = "${item.name}, ${item.sys.getString("country")}"
         holder.favouriteMinMax.get()?.text = "${item.main.getDouble("temp_max")
             .roundToInt()}\u00B0 / ${item.main.getDouble("temp_min").roundToInt()}\u00B0"
         holder.favouriteCurrent.get()?.text = "${item.main.getDouble("temp").roundToInt()}\u00B0"
@@ -62,7 +62,8 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder> {
                     }
                     false -> {
                         when (item.weather.getJSONObject(0).getString("main")
-                            .contains("rain", true)) {
+                            .contains("rain", true) || item.weather.getJSONObject(0).getString("main")
+                            .contains("drizzle", true)) {
                             true -> {
                                 holder.favouriteIcon.get()
                                     ?.setImageDrawable(context.getDrawable(R.drawable.rain))

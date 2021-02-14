@@ -121,7 +121,7 @@ class SearchCity : Fragment() {
                     getString(R.string.search_saved_new_city),
                     Toast.LENGTH_LONG
                 ).show()
-                createCurrent(current, arrayListOf())
+                createCurrent(current, arrayListOf(), "1")
                 activity?.onBackPressed()
             }
         }
