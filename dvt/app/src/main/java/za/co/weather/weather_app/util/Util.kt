@@ -162,7 +162,7 @@ class Util {
                                     }
                                 }
 
-                                createCurrent(current, forecast)
+                                createCurrent(current, forecast, "1")
 
                             }
                         }
@@ -193,6 +193,11 @@ class Util {
 
             var current: CurrentTemperatureData? = null
             var forecast = arrayListOf<ForecastTemperatureData>()
+
+            if (lat == 0.0 || lon == 0.0) {
+                return Pair(current, forecast)
+            }
+
 
             when (isMobileDataConnected(componentActivity) || isWiFiConnected(componentActivity)) {
 
@@ -264,7 +269,7 @@ class Util {
                                 }
 
 
-                                createCurrent(current, forecast)
+                                createCurrent(current, forecast, "0")
 
                             }
                         }
@@ -280,12 +285,6 @@ class Util {
                     ).show()
                 }
             }
-
-
-
-
-
-
             delay(2000)
             return Pair(current, forecast)
         }
@@ -400,7 +399,8 @@ class Util {
                         }
                         false -> {
                             when (currentTemperatureData.weather.getJSONObject(0).getString("main")
-                                .contains("rain", true)) {
+                                .contains("rain", true) || currentTemperatureData.weather.getJSONObject(0).getString("main")
+                                .contains("drizzle", true)) {
                                 true -> {
                                     context.background_main.background = ActivityCompat.getDrawable(
                                         context,
