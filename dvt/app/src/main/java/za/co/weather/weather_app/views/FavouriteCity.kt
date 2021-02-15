@@ -56,12 +56,8 @@ class FavouriteCity : Fragment() {
     override fun onStart() = runBlocking {
         super.onStart()
 
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
 
             if (Util.isWiFiConnected(requireContext()) || Util.isMobileDataConnected(requireContext())) {
 
@@ -69,8 +65,7 @@ class FavouriteCity : Fragment() {
 
             }
         } else {
-            Toast.makeText(requireContext(), getString(R.string.gps_not_enabled), Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(requireContext(), getString(R.string.gps_not_enabled), Toast.LENGTH_LONG).show()
         }
     }
 

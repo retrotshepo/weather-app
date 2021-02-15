@@ -1,4 +1,4 @@
-package za.co.weather.weather_app.views
+package za.co.weather.weather_app.util
 
 import android.Manifest
 import android.content.Context
@@ -10,7 +10,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapsMap(var context: Context) : OnMapReadyCallback {
+class CustomMapsHandler(var context: Context) : OnMapReadyCallback {
 
     var mGoogleMap: GoogleMap? = null
 

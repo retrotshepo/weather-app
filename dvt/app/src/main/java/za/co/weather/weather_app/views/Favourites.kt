@@ -44,7 +44,6 @@ class Favourites : Fragment() {
     override fun onStart() {
         super.onStart()
 
-
         val favourites = readFavourites()
         val forecastAdapter = FavouritesAdapter(
             requireContext(),
@@ -92,6 +91,20 @@ class Favourites : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        activity!!.menuInflater.inflate(R.menu.menu_favourites_overflow, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.action_view_locations) {
+            mapsScreen(requireActivity() as AppCompatActivity)
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     fun launchDialog(city: String, country: String) {
 
         alertDialog = (activity as AppCompatActivity).let {
@@ -119,22 +132,6 @@ class Favourites : Fragment() {
 
         alertDialog?.setCancelable(false)
         alertDialog?.show()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        activity!!.menuInflater.inflate(R.menu.menu_favourites_overflow, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if (item.itemId == R.id.action_view_locations) {
-//            println("hello world")
-            mapsScreen(requireActivity() as AppCompatActivity)
-        }
-
-        return super.onOptionsItemSelected(item)
-
     }
 
 }

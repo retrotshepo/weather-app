@@ -44,13 +44,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         initialize("dvt-weather.db", applicationContext)
         grantMultiplePermissions()
 
-
         toggle = ActionBarDrawerToggle(
             this, weather_drawer_layout, main_toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
-
 
         weather_drawer_layout.addDrawerListener(toggle!!)
         toggle?.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_white_24)

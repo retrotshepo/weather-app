@@ -41,15 +41,12 @@ class WeatherScreen : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         gps = CustomLocationListener(requireContext())
-        println("onCreateView")
         return inflater.inflate(R.layout.layout_weather_screen, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("onViewCreated")
         activity?.main_toolbar?.visibility = ViewGroup.GONE
 
         btn_refresh.setOnClickListener {
@@ -74,30 +71,29 @@ class WeatherScreen : Fragment() {
             if (isWiFiConnected(requireContext()) || isMobileDataConnected(requireContext())) {
 
 //                val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
-                val lat = getValue(LATITUDE)
-                val lon = getValue(LONGITUDE)
+//                val lat = getValue(LATITUDE)
+//                val lon = getValue(LONGITUDE)
+//
+//
+//                val lat1 = gps?.getLatitude()
+//                val lon1 = gps?.getLongitude()
 
 
-                val lat1 = gps?.getLatitude()
-                val lon1 = gps?.getLongitude()
-
-
-                when (!lat?.equals(0.0F)!! || !lon?.equals(0.0F)!!) {
+                when (!getValue(LATITUDE)?.equals(0.0F)!! || !getValue(LONGITUDE)?.equals(0.0F)!!) {
                     true -> {
-                        val pair = makeApiCall(requireActivity(), lat1, lon1)
-
+                        val pair =
+                            makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
                     }
 
                     false -> {
-
-                        val pair = makeApiCall(requireActivity(), lat?.toDouble(), lon?.toDouble())
+                        val pair =
+                            makeApiCall(requireActivity(), getValue(LATITUDE)?.toDouble(), getValue(LONGITUDE)?.toDouble())
                     }
                 }
             }
 
             else {
-
-            Toast.makeText(requireContext(), getString(R.string.internet_not_stable), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.internet_not_stable), Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(requireContext(), getString(R.string.gps_not_enabled), Toast.LENGTH_LONG).show()
@@ -114,24 +110,11 @@ class WeatherScreen : Fragment() {
             if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
                 updateScreen(activity as AppCompatActivity, current, forecast)
             }
-
-        println("onResume here")
-
-        }, 3000)
-
-
+        }, 2000)
     }
 
-    override fun onPause() {
-        super.onPause()
-        println("onPause")
-    }
     override fun onStop() {
         super.onStop()
-        println("onStop")
         gps?.stopGPS()
     }
-
-
-
 }
