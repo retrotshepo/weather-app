@@ -6,7 +6,7 @@
         <item
             android:id="@+id/action_home"
             android:enabled="true"
-            android:title="Home"
+            android:title="@string/action_home"
             android:icon="@drawable/ic_baseline_home_black_24"
             android:visible="true" />
 
@@ -14,7 +14,7 @@
             android:id="@+id/action_favourite_locations"
             android:enabled="true"
             android:icon="@drawable/ic_baseline_favorite_black_24"
-            android:title="Favourites"
+            android:title="@string/action_saved_locations"
             android:visible="true" />
 
     </group>

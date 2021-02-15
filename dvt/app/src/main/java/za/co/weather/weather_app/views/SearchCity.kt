@@ -17,7 +17,9 @@ import retrofit2.HttpException
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.retrofit.WeatherAPIEndpoint.Companion.getWeatherCityCALL
-import za.co.weather.weather_app.util.LocalDBHandler.Companion.create
+import za.co.weather.weather_app.util.LocalDBHandler.Companion.createCurrent
+import za.co.weather.weather_app.util.Util.Companion.isMobileDataConnected
+import za.co.weather.weather_app.util.Util.Companion.isWiFiConnected
 import za.co.weather.weather_app.util.Util.Companion.serializeToJSONObject
 
 class SearchCity : Fragment() {
@@ -39,60 +41,68 @@ class SearchCity : Fragment() {
             txt_search_error.setTextColor(ContextCompat.getColor(requireActivity(), R.color.amber))
             txt_search_error.text = getString(R.string.search_waiting)
 
-            this@SearchCity.lifecycleScope.launch(Dispatchers.IO) {
+            when(isMobileDataConnected(requireContext()) || isWiFiConnected(requireContext())) {
+                true -> {
+                    this@SearchCity.lifecycleScope.launch(Dispatchers.IO) {
 
-                try {
-                    val resCurrent = async { getWeatherCityCALL(text_city.text.toString()) }.await()
+                        try {
+                            val resCurrent = async { getWeatherCityCALL(text_city.text.toString()) }.await()
 
-                    if (resCurrent != null) {
+                            if (resCurrent != null) {
 
-                        val res = serializeToJSONObject(resCurrent as LinkedTreeMap<Any, Any>)
+                                val res = serializeToJSONObject(resCurrent as LinkedTreeMap<Any, Any>)
 
-                        if (res != null) {
-                            current =
-                                CurrentTemperatureData(
-                                    res.getJSONObject("coord"), res.getJSONArray("weather"),
-                                    res.getString("base"), res.getJSONObject("main"),
-                                    res.getDouble("visibility"), res.getJSONObject("wind"),
-                                    res.getJSONObject("clouds"), "${res.getDouble("dt")}",
-                                    res.getJSONObject("sys"), res.getLong("timezone"),
-                                    "${res.getLong("id")}", res.getString("name"),
-                                    "${res.getInt("cod")}"
-                                )
-                        }
-                        this@SearchCity.lifecycleScope.launch(Dispatchers.Main) {
-                            txt_search_error.text = getString(R.string.search_found)
-                            txt_search_error.setTextColor(
-                                ContextCompat.getColor(
-                                    requireActivity(),
-                                    R.color.green
-                                )
-                            )
-                        }
+                                if (res != null) {
+                                    current =
+                                        CurrentTemperatureData(
+                                            res.getJSONObject("coord"), res.getJSONArray("weather"),
+                                            res.getString("base"), res.getJSONObject("main"),
+                                            res.getDouble("visibility"), res.getJSONObject("wind"),
+                                            res.getJSONObject("clouds"), "${res.getDouble("dt")}",
+                                            res.getJSONObject("sys"), res.getLong("timezone"),
+                                            "${res.getLong("id")}", res.getString("name"),
+                                            "${res.getInt("cod")}", System.currentTimeMillis()
+                                        )
+                                }
+                                this@SearchCity.lifecycleScope.launch(Dispatchers.Main) {
+                                    txt_search_error.text = getString(R.string.search_found)
+                                    txt_search_error.setTextColor(
+                                        ContextCompat.getColor(
+                                            requireActivity(),
+                                            R.color.green
+                                        )
+                                    )
+                                }
 
-                    } else {
-                        this@SearchCity.lifecycleScope.launch(Dispatchers.Main) {
-                            txt_search_error.setTextColor(
-                                ContextCompat.getColor(
-                                    requireActivity(),
-                                    R.color.red
-                                )
-                            )
-                            txt_search_error.text = getString(R.string.search_not_found)
-                        }
-                    }
-                } catch (e: HttpException) {
-                    println(e.message)
-                    if (e.code() == 404) {
-                        this@SearchCity.lifecycleScope.launch(Dispatchers.Main) {
+                            } else {
+                                this@SearchCity.lifecycleScope.launch(Dispatchers.Main) {
+                                    txt_search_error.setTextColor(
+                                        ContextCompat.getColor(
+                                            requireActivity(),
+                                            R.color.red
+                                        )
+                                    )
+                                    txt_search_error.text = getString(R.string.search_not_found)
+                                }
+                            }
+                        } catch (e: HttpException) {
+                            println(e.message)
+                            if (e.code() == 404) {
+                                this@SearchCity.lifecycleScope.launch(Dispatchers.Main) {
 //                        activity?.onBackPressed()
-                            txt_search_error.setTextColor(
-                                ContextCompat
-                                    .getColor(requireActivity(), R.color.red)
-                            )
-                            txt_search_error.text = e.message
+                                    txt_search_error.setTextColor(
+                                        ContextCompat
+                                            .getColor(requireActivity(), R.color.red)
+                                    )
+                                    txt_search_error.text = e.message
+                                }
+                            }
                         }
                     }
+                }
+                false -> {
+                    Toast.makeText(requireContext(), getString(R.string.internet_not_stable), Toast.LENGTH_LONG).show()
+                    txt_search_error.text = ""
                 }
             }
         }
@@ -106,7 +116,12 @@ class SearchCity : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                create(current)
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.search_saved_new_city),
+                    Toast.LENGTH_LONG
+                ).show()
+                createCurrent(current, arrayListOf(), "1")
                 activity?.onBackPressed()
             }
         }

@@ -23,6 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
         }
     }
     compileOptions {
@@ -54,5 +55,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     implementation 'io.realm:android-adapters:2.1.0'
+
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+
 
 }

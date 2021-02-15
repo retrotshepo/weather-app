@@ -1,4 +1,4 @@
-package za.co.weather.weather_app.util
+package za.co.weather.weather_app.retrofit
 
 import okhttp3.ResponseBody
 import retrofit2.Converter

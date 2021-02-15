@@ -3,10 +3,7 @@ package za.co.weather.weather_app.util
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import za.co.weather.weather_app.R
-import za.co.weather.weather_app.views.FavouriteCity
-import za.co.weather.weather_app.views.Favourites
-import za.co.weather.weather_app.views.SearchCity
-import za.co.weather.weather_app.views.WeatherScreen
+import za.co.weather.weather_app.views.*
 
 class NavigationRoutes {
 
@@ -26,6 +23,10 @@ class NavigationRoutes {
 
         fun searchScreen(context: AppCompatActivity) {
             loadFragment(context, SearchCity())
+        }
+
+        fun mapsScreen(context: AppCompatActivity) {
+            loadFragment(context, MapsScreen())
         }
 
         private fun loadFragment(activity: AppCompatActivity, fragment: Fragment, holder: Int = R.id.main_content_frame) {
