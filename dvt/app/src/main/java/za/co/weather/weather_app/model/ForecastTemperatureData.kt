@@ -3,7 +3,7 @@ package za.co.weather.weather_app.model
 import org.json.JSONArray
 import org.json.JSONObject
 
-class DailyTemperatureData {
+class ForecastTemperatureData {
 
     var dt: String
     var main: JSONObject
@@ -17,10 +17,11 @@ class DailyTemperatureData {
     var sys: JSONObject
 
     var date: String
+    var city: JSONObject
 
     constructor(dt: String, main: JSONObject, weather: JSONArray, clouds: JSONObject,
         wind: JSONObject, visibility: Double, pop: Double, rain: JSONObject,
-        sys: JSONObject, date: String
+        sys: JSONObject, date: String, city: JSONObject
     ) {
         this.dt = dt
         this.main = main
@@ -32,5 +33,6 @@ class DailyTemperatureData {
         this.rain = rain
         this.sys = sys
         this.date = date
+        this.city = city
     }
 }

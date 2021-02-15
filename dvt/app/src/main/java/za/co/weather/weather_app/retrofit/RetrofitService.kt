@@ -3,7 +3,7 @@ package za.co.weather.weather_app.retrofit
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import za.co.weather.weather_app.util.NullOnEmptyConverterFactory.Companion.NullConverterFactory
+import za.co.weather.weather_app.retrofit.NullOnEmptyConverterFactory.Companion.NullConverterFactory
 import java.util.concurrent.TimeUnit
 
 class RetrofitService {

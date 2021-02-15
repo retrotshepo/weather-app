@@ -6,24 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
-import za.co.weather.weather_app.model.DailyTemperatureData
+import za.co.weather.weather_app.model.ForecastTemperatureData
+import za.co.weather.weather_app.util.Util.Companion.convertDateToDay
 import java.lang.ref.WeakReference
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
+class ForecastAdapter(private var context: Context, items: ArrayList<ForecastTemperatureData>?) :
+    RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
 
-    private var context: Context
-    private var items: ArrayList<DailyTemperatureData>
+    private var items: ArrayList<ForecastTemperatureData>
 
-    constructor(
-        context: Context,
-        items: ArrayList<DailyTemperatureData>?
-    ) : super() {
-        this.context = context
+    init {
         this.items = arrayListOf()
         if (!items.isNullOrEmpty()) {
             this.items = items
@@ -51,20 +48,20 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
         when (item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
             true -> {
                 holder.dailyTempIcon.get()
-                    ?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+                    ?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.partlysunny))
             }
             false -> {
                 when (item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
                     true -> {
                         holder.dailyTempIcon.get()
-                            ?.setImageDrawable(context.getDrawable(R.drawable.clear))
+                            ?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.clear))
                     }
                     false -> {
                         when (item.weather.getJSONObject(0).getString("main")
                             .contains("rain", true)) {
                             true -> {
                                 holder.dailyTempIcon.get()
-                                    ?.setImageDrawable(context.getDrawable(R.drawable.rain))
+                                    ?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.rain))
                             }
                         }
                     }
@@ -73,39 +70,10 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
         }
     }
 
-    private fun convertDateToDay(date: String): String? {
-
-        val calendar = Calendar.getInstance()
-        val todayFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        calendar.time = todayFormat.parse(date)
-
-        return getDayString(calendar.get(Calendar.DAY_OF_WEEK))
-    }
-
-
-    private fun getDayString(day: Int): String? {
-        when (day) {
-            1 -> { return "Monday" }
-            2 -> { return "Tuesday" }
-            3 -> { return "Wednesday" }
-            4 -> { return "Thursday" }
-            5 -> { return "Friday" }
-            6 -> { return "Saturday" }
-            7 -> { return "Sunday" }
-        }
-        return ""
-    }
-
-    class ViewHolder : RecyclerView.ViewHolder {
-        var dailyTempDay: WeakReference<TextView>
-        var dailyTempIcon: WeakReference<ImageView>
-        var dailyTempMax: WeakReference<TextView>
-
-        constructor(itemView: View) : super(itemView) {
-            dailyTempDay = WeakReference(itemView.findViewById(R.id.item_forecast_day))
-            dailyTempMax = WeakReference(itemView.findViewById(R.id.item_forecast_temp))
-            dailyTempIcon = WeakReference(itemView.findViewById(R.id.item_forecast_condition))
-        }
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var dailyTempDay: WeakReference<TextView> = WeakReference(itemView.findViewById(R.id.item_forecast_day))
+        var dailyTempIcon: WeakReference<ImageView> = WeakReference(itemView.findViewById(R.id.item_forecast_condition))
+        var dailyTempMax: WeakReference<TextView> = WeakReference(itemView.findViewById(R.id.item_forecast_temp))
 
     }
 }
