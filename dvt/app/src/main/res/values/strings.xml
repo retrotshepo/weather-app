@@ -26,4 +26,6 @@
     <string name="action_saved_locations">Saved locations</string>
     <string name="action_home">Home</string>
 
+    <string name="google_api_key">AIzaSyDu4wFZHOtg82iNancLAAabvsB2T1P1gd0</string>
+
 </resources>

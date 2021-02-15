@@ -16,6 +16,7 @@ import za.co.weather.weather_app.model.CurrentTemperatureData
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.deleteCurrent
 import za.co.weather.weather_app.util.LocalDBHandler.Companion.readFavourites
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.cityScreen
+import za.co.weather.weather_app.util.NavigationRoutes.Companion.mapsScreen
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.reloadCurrentFragment
 import za.co.weather.weather_app.util.NavigationRoutes.Companion.searchScreen
 import za.co.weather.weather_app.util.Util.Companion.cityName
@@ -38,7 +39,6 @@ class Favourites : Fragment() {
 
         activity?.title = getString(R.string.screen_favourites)
         setHasOptionsMenu(true)
-
     }
 
     override fun onStart() {
@@ -129,7 +129,8 @@ class Favourites : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (item.itemId == R.id.action_view_locations) {
-            println("hello world")
+//            println("hello world")
+            mapsScreen(requireActivity() as AppCompatActivity)
         }
 
         return super.onOptionsItemSelected(item)
