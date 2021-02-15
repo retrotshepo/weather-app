@@ -80,12 +80,12 @@ class WeatherScreen : Fragment() {
 
 
                 when (!getValue(LATITUDE)?.equals(0.0F)!! || !getValue(LONGITUDE)?.equals(0.0F)!!) {
-                    true -> {
+                    false -> {
                         val pair =
                             makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
                     }
 
-                    false -> {
+                    true -> {
                         val pair =
                             makeApiCall(requireActivity(), getValue(LATITUDE)?.toDouble(), getValue(LONGITUDE)?.toDouble())
                     }
