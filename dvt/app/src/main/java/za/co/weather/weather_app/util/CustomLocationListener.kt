@@ -31,7 +31,6 @@ class CustomLocationListener(var context: Context) : LocationListener {
         getLastKnownLocationNetwork(this.context)
     }
 
-
     override fun onLocationChanged(p0: Location?) {
 
         if (p0 != null) {
