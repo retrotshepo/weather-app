@@ -64,9 +64,7 @@ class WeatherScreen : Fragment() {
     override fun onStart() = runBlocking {
         super.onStart()
         println("onStart")
-//        gps?.getLastKnownLocationGPS(requireContext())
-//        gps?.getLastKnownLocationNetwork(requireContext())
-        if (ContextCompat.checkSelfPermission(
+            if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
@@ -84,7 +82,7 @@ class WeatherScreen : Fragment() {
                 val lon1 = gps?.getLongitude()
 
 
-                when (lat?.equals(0.0F)!! || lon?.equals(0.0F)!!) {
+                when (!lat?.equals(0.0F)!! || !lon?.equals(0.0F)!!) {
                     true -> {
                         val pair = makeApiCall(requireActivity(), lat1, lon1)
 
@@ -95,21 +93,6 @@ class WeatherScreen : Fragment() {
                         val pair = makeApiCall(requireActivity(), lat?.toDouble(), lon?.toDouble())
                     }
                 }
-
-
-//                current = pair.first
-//                current = read("")
-
-//                current = readCurrent("")?.first
-//                forecast = readCurrent("")?.second
-
-//                forecast = pair.second
-
-//                if (current != null && forecast != null && current?.sys?.has("country")!!) {
-//                if (current != null && !forecast.isNullOrEmpty() && current?.sys?.has("country")!!) {
-//                    updateScreen(activity as AppCompatActivity, current, forecast)
-//                }
-
             }
 
             else {
