@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import za.co.weather.weather_app.R
 import za.co.weather.weather_app.model.ForecastTemperatureData
@@ -14,16 +15,12 @@ import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.math.roundToInt
 
-class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
+class ForecastAdapter(private var context: Context, items: ArrayList<ForecastTemperatureData>?) :
+    RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
 
-    private var context: Context
     private var items: ArrayList<ForecastTemperatureData>
 
-    constructor(
-        context: Context,
-        items: ArrayList<ForecastTemperatureData>?
-    ) : super() {
-        this.context = context
+    init {
         this.items = arrayListOf()
         if (!items.isNullOrEmpty()) {
             this.items = items
@@ -51,20 +48,20 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
         when (item.weather.getJSONObject(0).getString("main").contains("cloud", true)) {
             true -> {
                 holder.dailyTempIcon.get()
-                    ?.setImageDrawable(context.getDrawable(R.drawable.partlysunny))
+                    ?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.partlysunny))
             }
             false -> {
                 when (item.weather.getJSONObject(0).getString("main").contains("clear", true)) {
                     true -> {
                         holder.dailyTempIcon.get()
-                            ?.setImageDrawable(context.getDrawable(R.drawable.clear))
+                            ?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.clear))
                     }
                     false -> {
                         when (item.weather.getJSONObject(0).getString("main")
                             .contains("rain", true)) {
                             true -> {
                                 holder.dailyTempIcon.get()
-                                    ?.setImageDrawable(context.getDrawable(R.drawable.rain))
+                                    ?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.rain))
                             }
                         }
                     }
@@ -73,16 +70,10 @@ class ForecastAdapter : RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
         }
     }
 
-    class ViewHolder : RecyclerView.ViewHolder {
-        var dailyTempDay: WeakReference<TextView>
-        var dailyTempIcon: WeakReference<ImageView>
-        var dailyTempMax: WeakReference<TextView>
-
-        constructor(itemView: View) : super(itemView) {
-            dailyTempDay = WeakReference(itemView.findViewById(R.id.item_forecast_day))
-            dailyTempMax = WeakReference(itemView.findViewById(R.id.item_forecast_temp))
-            dailyTempIcon = WeakReference(itemView.findViewById(R.id.item_forecast_condition))
-        }
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var dailyTempDay: WeakReference<TextView> = WeakReference(itemView.findViewById(R.id.item_forecast_day))
+        var dailyTempIcon: WeakReference<ImageView> = WeakReference(itemView.findViewById(R.id.item_forecast_condition))
+        var dailyTempMax: WeakReference<TextView> = WeakReference(itemView.findViewById(R.id.item_forecast_temp))
 
     }
 }
