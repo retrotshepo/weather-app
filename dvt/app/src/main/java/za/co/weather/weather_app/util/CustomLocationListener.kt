@@ -38,7 +38,6 @@ class CustomLocationListener(var context: Context) : LocationListener {
             currentLocation = p0
             latitude = p0.latitude
             longitude = p0.longitude
-        println("onLocationChanged lat:$latitude \tlon:$longitude")
 
             when (latitude != 0.0 && longitude != 0.0) {
                 true -> {
@@ -46,7 +45,6 @@ class CustomLocationListener(var context: Context) : LocationListener {
                     saveValue(LONGITUDE, longitude?.toFloat())
                 }
             }
-
         }
     }
 

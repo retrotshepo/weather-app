@@ -60,7 +60,6 @@ class WeatherScreen : Fragment() {
 
     override fun onStart() = runBlocking {
         super.onStart()
-        println("onStart")
             if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -70,21 +69,11 @@ class WeatherScreen : Fragment() {
 
             if (isWiFiConnected(requireContext()) || isMobileDataConnected(requireContext())) {
 
-//                val pair = makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
-//                val lat = getValue(LATITUDE)
-//                val lon = getValue(LONGITUDE)
-//
-//
-//                val lat1 = gps?.getLatitude()
-//                val lon1 = gps?.getLongitude()
-
-
                 when (!getValue(LATITUDE)?.equals(0.0F)!! || !getValue(LONGITUDE)?.equals(0.0F)!!) {
                     false -> {
                         val pair =
                             makeApiCall(requireActivity(), gps?.getLatitude(), gps?.getLongitude())
                     }
-
                     true -> {
                         val pair =
                             makeApiCall(requireActivity(), getValue(LATITUDE)?.toDouble(), getValue(LONGITUDE)?.toDouble())
